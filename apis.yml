@@ -1,18 +1,85 @@
 aid: goodera
 name: Goodera
-description: 'Goodera is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'Goodera is a B2B SaaS corporate volunteering and social impact platform
+  that curates, hosts and manages employee volunteering programs for enterprises,
+  working with a stated 50,000+ vetted nonprofit partners across 100+ countries in
+  virtual, in-person, outdoor and in-office formats. For integrators it publishes a
+  REST Developer API at developer-api.goodera.com covering volunteering opportunities,
+  event creation, registrations and participation/hours tracking, authenticated with
+  an x-api-key header, and it operates a remote Model Context Protocol server at
+  mcp.goodera.com that exposes 19 anonymous-readable tools over the same events,
+  clients, champions, activities, opportunities and master-data domains.'
 url: https://raw.githubusercontent.com/api-evangelist/goodera/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-22'
 modified: '2026-08-22'
+image: https://cdn.prod.website-files.com/62dadf7d66e2fb7047b69c6d/65709f96a6e543204c638376_Home%20opengraph.webp
 tags:
 - Company
-apis: []
+- Corporate Volunteering
+- Social Impact
+- CSR
+- Employee Engagement
+- Nonprofits
+- Events
+- Volunteering
+- ESG
+- Model Context Protocol
+apis:
+- aid: goodera-developer-api
+  name: Goodera Developer API
+  description: 'REST API for volunteering partners to list Goodera volunteer opportunities
+    inside their own platform, create volunteering events against an opportunity,
+    register and de-register volunteers, and record participation for volunteer-hour
+    tracking. JSON over HTTPS, API key in the x-api-key header, with an unauthenticated
+    master-data surface for timezone, country and language reference lists.'
+  humanURL: https://www.goodera.com/resources/api
+  baseURL: https://developer-api.goodera.com
+  tags:
+  - Volunteering
+  - Opportunities
+  - Events
+  - Registrations
+  - Participation
+  properties:
+  - type: APIReference
+    url: https://www.goodera.com/resources/api
+  - type: Documentation
+    url: https://www.goodera.com/resources/api
+  - type: Authentication
+    url: authentication/goodera-authentication.yml
+  - type: ErrorCatalog
+    url: errors/goodera-problem-types.yml
+  - type: Conventions
+    url: conventions/goodera-conventions.yml
+  - type: RateLimits
+    url: rate-limits/goodera-rate-limits.yml
+  - type: DataModel
+    url: data-model/goodera-data-model.yml
+- aid: goodera-mcp
+  name: Goodera MCP Server
+  description: 'Remote Model Context Protocol server announced as the first from a
+    social impact company, exposing live Goodera volunteering data to AI agents and
+    LLM workflows. Streamable HTTP transport at https://mcp.goodera.com/mcp, server
+    name "Goodera MCP" version 1.14.1, protocol 2025-06-18, answering initialize and
+    tools/list anonymously with 19 tools across events, clients, champions, master
+    data, activities, opportunities and templated email.'
+  humanURL: https://www.goodera.com/blog/goodera-launches-mcp-server
+  baseURL: https://mcp.goodera.com/mcp
+  tags:
+  - Model Context Protocol
+  - Agents
+  - Events
+  - Opportunities
+  properties:
+  - type: MCPServer
+    url: mcp/goodera-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/goodera-tool-crosswalk.yml
+  - type: Documentation
+    url: https://www.goodera.com/blog/goodera-launches-mcp-server
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +87,51 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://www.goodera.com/
+- type: APIReference
+  url: https://www.goodera.com/resources/api
+- type: Documentation
+  url: https://www.goodera.com/resources/api
+- type: Blog
+  url: https://www.goodera.com/blog
+- type: TermsOfService
+  url: https://www.goodera.com/pages/terms
+- type: PrivacyPolicy
+  url: https://www.goodera.com/pages/privacy
+- type: Support
+  url: https://www.goodera.com/about/contact-us
+- type: SignUp
+  url: https://app.goodera.com/
+- type: LLMsTxt
+  url: llms/goodera-llms.txt
+- type: MCPServer
+  url: mcp/goodera-mcp.yml
+- type: Authentication
+  url: authentication/goodera-authentication.yml
+- type: Conventions
+  url: conventions/goodera-conventions.yml
+- type: ErrorCatalog
+  url: errors/goodera-problem-types.yml
+- type: RateLimits
+  url: rate-limits/goodera-rate-limits.yml
+- type: Plans
+  url: plans/goodera-plans-pricing.yml
+- type: Lifecycle
+  url: lifecycle/goodera-lifecycle.yml
+- type: Conformance
+  url: conformance/goodera-conformance.yml
+- type: Packages
+  url: packages/goodera-packages.yml
+- type: DataModel
+  url: data-model/goodera-data-model.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Webhooks
+  url: asyncapi/goodera-webhooks.yml
+- type: DomainSecurity
+  url: security/goodera-domain-security.yml
+x-enrichment:
+  date: '2026-08-22'
+  status: enriched
+  artifacts_added: 19
+  pass: local-v1

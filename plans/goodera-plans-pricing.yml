@@ -1,0 +1,36 @@
+generated: '2026-08-22'
+method: searched
+source: https://www.goodera.com/
+plan_count: 0
+plans: []
+pricing_model: enterprise-quote
+self_service_signup: false
+free_tier: false
+description: >-
+  Goodera publishes no pricing page and no plans. The company sells enterprise corporate
+  volunteering programs through a sales motion, and API access is gated behind the same
+  motion.
+evidence:
+- url: https://www.goodera.com/pricing
+  status: 404
+- url: https://www.goodera.com/plans
+  status: 404
+- url: https://www.goodera.com/sitemap.xml
+  status: 200
+  finding: >-
+    3,341 URLs enumerated from the provider's own sitemap. No pricing, plans, or cost page
+    exists in it in any of the five published locales.
+- url: https://www.goodera.com/resources/api
+  status: 200
+  finding: >-
+    API access is obtained through a "Request access" form that collects only a company email
+    address and promises follow-up within 24 hours. There is no published price, no tier, no
+    included quota, and no overage schedule for API usage.
+- url: https://www.goodera.com/about/contact-us
+  status: 200
+  finding: >-
+    Commercial contact is by email to partnerships@goodera.com, consistent with a
+    quote-per-account model.
+note: >-
+  Recorded as a genuine zero, not a gap in our search. A buyer cannot learn what any part of
+  Goodera costs, including the API, without talking to sales.

@@ -1,0 +1,112 @@
+generated: '2026-08-22'
+method: probed
+source: direct HTTPS probes of /.well-known/* on every Goodera host
+description: >-
+  Well-known probe record for Goodera. NO POINTER IS EMITTED IN apis.yml FOR THIS FILE -
+  every path on every host returned a non-200 or a non-document body, so there is no
+  WellKnown, SecurityTxt or APICatalog surface to assert on Goodera's behalf. This file
+  records the measured absence.
+result: no-documents-served
+hosts:
+- host: www.goodera.com
+  note: >-
+    Webflow-hosted marketing site. Every /.well-known/* path returns HTTP 404 with an
+    88-byte HTML body reading "Invalid .well-known request" - a genuine 404, not an SPA
+    catch-all 200.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: developer-api.goodera.com
+  note: >-
+    NestJS/Express application behind nginx. Unmatched routes return HTTP 500 wrapping a
+    404 NotFoundException, and the error body discloses that the reverse proxy rewrites
+    the request path under the internal prefix /v2/developer-api/v1/. No well-known
+    document is served.
+  documents:
+  - path: /.well-known/security.txt
+    status: 500
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 500
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 500
+    file: null
+  - path: /.well-known/api-catalog
+    status: 500
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 500
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 500
+    file: null
+  - path: /.well-known/agent.json
+    status: 500
+    file: null
+- host: mcp.goodera.com
+  note: >-
+    uvicorn-served MCP endpoint. Every well-known path returns a plain-text HTTP 404
+    "Not Found". Notably /.well-known/oauth-protected-resource (RFC 9728) is also absent,
+    so an MCP client has no discovery path to an authorization server.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+adjacent_signals:
+- path: /robots.txt
+  host: www.goodera.com
+  status: 200
+  note: >-
+    Served and unusually deliberate for AI access - it names an explicit allowlist of AI
+    crawlers (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-Web,
+    Claude-SearchBot, anthropic-ai, Google-Extended, PerplexityBot, Perplexity-User,
+    Applebot-Extended) alongside traditional search crawlers, and blocks DEI-keyword
+    slugs under /pages/. Recorded here as an agent-access signal; robots.txt is not a
+    well-known document and earns no pointer.
+- path: /llms.txt
+  host: www.goodera.com
+  status: 200
+  note: >-
+    Served and substantial (11KB, ~90 curated links with an explicit AI Instructions
+    block). Captured verbatim to llms/goodera-llms.txt and pointed at as type LLMsTxt.

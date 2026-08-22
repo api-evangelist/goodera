@@ -1,0 +1,39 @@
+generated: '2026-08-22'
+method: searched
+source: https://www.goodera.com/resources/api
+docs: https://www.goodera.com/resources/api
+limit_count: 0
+rate_limits: []
+headers: []
+exhaustion_status_code: null
+retry_after: false
+description: >-
+  Goodera publishes no rate limits for the Developer API or the MCP server. An honest zero,
+  not an unchecked field.
+evidence:
+- url: https://www.goodera.com/resources/api
+  status: 200
+  finding: >-
+    The full API reference was retrieved and searched. It contains no rate limit, quota,
+    throttle, burst, concurrency or fair-use language of any kind, and the documented status
+    code table for every operation lists only 200, 401, 403 and 500 - there is no 429.
+- url: https://developer-api.goodera.com/opportunities
+  status: 500
+  finding: >-
+    Live unauthenticated probe. Response headers were date, content-type, content-length,
+    server (nginx/1.24.0 Ubuntu), x-powered-by (Express), vary, access-control-allow-credentials
+    and etag. No RateLimit-*, X-RateLimit-* or Retry-After header was present.
+- url: https://mcp.goodera.com/mcp
+  status: 200
+  finding: >-
+    Live MCP initialize and tools/list. No rate-limit headers were returned on either response.
+findings:
+- id: no-runtime-signal
+  note: >-
+    Neither a documented number nor a runtime header exists. An agent has no way to learn its
+    budget in advance and no way to learn it has been throttled except by inferring it from a
+    generic 500, which the API already uses for routing misses.
+- id: no-429-in-contract
+  note: >-
+    429 is not in the published status table, so a client written strictly to the documented
+    contract has no branch for exhaustion.

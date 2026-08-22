@@ -1,0 +1,69 @@
+generated: '2026-08-22'
+method: searched
+source: https://www.goodera.com/resources/api
+description: >-
+  Event/webhook surface for Goodera. A webhook delivery capability genuinely exists, but it is
+  configuration only - Goodera publishes no event catalog, no payload schema, no delivery
+  semantics and no signature scheme. Captured as a Webhooks catalog because the capability is
+  real; recorded as unspecified because the contract is not.
+asyncapi_spec: null
+asyncapi_present: false
+asyncapi_evidence:
+- url: https://developer-api.goodera.com/asyncapi.yaml
+  status: 500
+- url: https://www.goodera.com/sitemap.xml
+  status: 200
+  finding: No AsyncAPI, event-catalog, or streaming documentation page among 3,341 URLs.
+webhooks:
+  supported: true
+  direction: outbound - Goodera POSTs to a customer-supplied endpoint
+  configuration:
+  - field: webhookUrl
+    scope: organization configuration
+    description: >-
+      Customer-supplied callback URL carried on the organization configuration object returned
+      by the API. Present and populated in the reference's own example payload.
+  - field: inPersonWebhookUrl
+    scope: organization configuration
+    description: >-
+      Separate callback URL for in-person events, implying at least two delivery channels
+      distinguished by event format.
+  self_service_configuration: false
+  configuration_note: >-
+    No documented operation lets a partner set these fields. They appear as read-back values on
+    the organization object, so configuration appears to be performed by Goodera on the
+    customer's behalf.
+events:
+  catalog_published: false
+  count: 0
+  note: >-
+    Goodera publishes no list of the events that trigger a webhook. Nothing states whether a
+    callback fires on event creation, registration, cancellation, participation, or completion.
+payloads:
+  schema_published: false
+  example_published: false
+  content_type: unknown
+delivery:
+  retry_policy: undocumented
+  ordering: undocumented
+  at_least_once: undocumented
+  timeout: undocumented
+security:
+  signature_scheme: undocumented
+  shared_secret: undocumented
+  ip_allowlist: undocumented
+  note: >-
+    No HMAC signature header, timestamp, or verification procedure is published, so a receiving
+    endpoint has no documented way to prove a callback came from Goodera.
+findings:
+- id: webhook-capability-without-a-contract
+  severity: medium
+  note: >-
+    The capability is real and in production - the reference's own example shows a populated
+    live callback URL - but a partner cannot write a receiver from the documentation. They
+    would have to be told the payload shape out of band.
+- id: absent-from-mcp
+  note: >-
+    Webhooks are the only push mechanism Goodera has, and the MCP server exposes no
+    subscription or notification capability (resources.subscribe is false and zero resources
+    are published), so an agent must poll.

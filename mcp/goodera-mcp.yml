@@ -1,0 +1,178 @@
+generated: '2026-08-22'
+method: probed
+source: https://mcp.goodera.com/mcp
+name: Goodera MCP Server
+slug: goodera-mcp
+description: >-
+  Remote Model Context Protocol server operated by Goodera. Announced on the Goodera
+  blog as the first MCP server from a social impact company, bringing real-time
+  volunteering data to AI agents and LLM-powered workflows. API Evangelist reached the
+  endpoint anonymously and completed a full initialize + tools/list handshake, so every
+  tool and input schema recorded here is the server's own response, not a derivation.
+deployment:
+  mode: remote
+  endpoint: https://mcp.goodera.com/mcp
+  transport: streamable-http
+  install: null
+  package: null
+  auth: none
+  verified: probed
+  note: >-
+    The endpoint URL is not printed in Goodera's public documentation or in the launch
+    blog post; API Evangelist resolved mcp.goodera.com by DNS and confirmed the MCP
+    surface by protocol handshake. GET /mcp returns HTTP 406 with a JSON-RPC error
+    demanding text/event-stream, which is the MCP streamable-HTTP signature. POST
+    initialize returned HTTP 200, an mcp-session-id header, and a full server capability
+    block with no credential of any kind supplied. No OAuth challenge was issued and
+    neither /.well-known/oauth-protected-resource nor /.well-known/oauth-authorization-server
+    is served (both 404), so there is no discoverable authorization server for this
+    resource.
+server_info:
+  name: Goodera MCP
+  version: 1.14.1
+  protocol_version: '2025-06-18'
+  implementation: uvicorn / FastMCP (x-accel-buffering and _meta._fastmcp present in responses)
+  instructions: >-
+    You are a helpful assistant that can help with a variety of tasks. You are currently
+    working for Goodera, a company that provides a platform for volunteering and events.
+capabilities:
+  tools:
+    supported: true
+    list_changed: true
+    count: 19
+  prompts:
+    supported: true
+    list_changed: true
+    count: 0
+  resources:
+    supported: true
+    subscribe: false
+    list_changed: true
+    count: 0
+    templates: 0
+  experimental: {}
+tool_schemas: mcp/goodera-mcp-tools.json
+tools:
+- name: listing-events
+  category: events
+  write: false
+  description: List all volunteering events created by Goodera clients, filtered by time range, state, champion or client.
+- name: retrieving-event
+  category: events
+  write: false
+  description: Retrieve a specific event by identifier, including name, description, start/end time and location.
+- name: retrieving-event-participation-details
+  category: events
+  write: false
+  description: Retrieve participation details for a specific event.
+- name: retrieving-event-rating-details
+  category: events
+  write: false
+  description: Retrieve rating details for a specific event.
+- name: retrieving-event-shipment-details
+  category: events
+  write: false
+  description: Retrieve shipment details for a specific event.
+- name: retrieving-event-collateral-details
+  category: events
+  write: false
+  description: Retrieve collateral details for a specific event.
+- name: listing-clients
+  category: clients
+  write: false
+  description: Find all clients associated with Goodera's systems.
+- name: retrieving-brand-guidelines
+  category: clients
+  write: false
+  description: Retrieve brand guidelines for a specific client, including primary and secondary colours.
+- name: listing-champions
+  category: champions
+  write: false
+  description: Find all champions associated with events.
+- name: finding-master-data-by-domain
+  category: master-data
+  write: false
+  description: Look up master-data key/value pairs by domain.
+- name: finding-master-data-by-domain-and-type
+  category: master-data
+  write: false
+  description: Look up master-data key/value pairs by domain and type.
+- name: finding-all-master-data
+  category: master-data
+  write: false
+  description: Return all master-data key/value pairs.
+- name: sending-email-with-template
+  category: messaging
+  write: true
+  description: Send an email using a predefined template.
+- name: sending-plain-html-email
+  category: messaging
+  write: true
+  description: Send an email using plain HTML through a selectable email adapter.
+- name: search-activities
+  category: catalog
+  write: false
+  description: Search volunteering activities by query, business unit and deliverable type.
+- name: retrieving-activity
+  category: catalog
+  write: false
+  description: Retrieve an activity by id for additional detail.
+- name: build-execution-plan
+  category: planning
+  write: false
+  description: Build an execution plan to help resolve a user query across the other tools.
+- name: search-opportunities
+  category: catalog
+  write: false
+  description: Search volunteering opportunities by query and activity format.
+- name: retrieving-opportunity
+  category: catalog
+  write: false
+  description: Retrieve an opportunity by id for additional detail.
+observations:
+- id: anonymous-tool-listing
+  note: >-
+    All 19 tools, with complete JSON Schema input definitions, are enumerable with no
+    credential. Tool listing is not the same as tool execution and API Evangelist did not
+    invoke any tool, so whether the data-returning calls are themselves anonymous is not
+    established here.
+- id: unauthenticated-write-tools-advertised
+  note: >-
+    Two of the 19 advertised tools are write/side-effect operations that send email
+    (sending-email-with-template, sending-plain-html-email). They are advertised on an
+    endpoint that performs no authentication at the protocol layer and publishes no
+    OAuth protected-resource metadata. This is recorded as an observation about the
+    published surface, not a vulnerability claim; API Evangelist did not call them.
+- id: no-oauth-discovery
+  note: >-
+    RFC 9728 /.well-known/oauth-protected-resource returns 404 on mcp.goodera.com, as does
+    /.well-known/oauth-authorization-server, so an MCP client cannot negotiate authorization
+    by discovery.
+- id: no-prompts-or-resources
+  note: The server declares prompts and resources capabilities but publishes zero of each.
+x-evidence:
+  fetched: '2026-08-22'
+  probes:
+  - url: https://mcp.goodera.com/
+    method: GET
+    http_status: 404
+  - url: https://mcp.goodera.com/mcp
+    method: GET
+    http_status: 406
+    body: 'Not Acceptable: Client must accept text/event-stream'
+  - url: https://mcp.goodera.com/mcp
+    method: POST
+    rpc: initialize
+    http_status: 200
+    content_type: text/event-stream
+  - url: https://mcp.goodera.com/mcp
+    method: POST
+    rpc: tools/list
+    http_status: 200
+    tools_returned: 19
+  - url: https://mcp.goodera.com/.well-known/oauth-protected-resource
+    method: GET
+    http_status: 404
+  - url: https://mcp.goodera.com/.well-known/oauth-authorization-server
+    method: GET
+    http_status: 404

@@ -1,0 +1,77 @@
+generated: '2026-08-22'
+method: searched
+source: https://www.goodera.com/resources/api
+docs: https://www.goodera.com/resources/api
+description: >-
+  Authentication profile for Goodera's two published API surfaces. Derived from the
+  provider's own API reference and from a live protocol handshake against the MCP
+  endpoint. No OpenAPI securitySchemes block exists to derive from, because Goodera
+  publishes no OpenAPI document.
+surfaces:
+- surface: Goodera Developer API
+  base_url: https://developer-api.goodera.com
+  schemes:
+  - id: api-key-header
+    type: apiKey
+    in: header
+    name: x-api-key
+    description: >-
+      Single static API key sent on every authenticated request. Documented verbatim in
+      the reference as: curl --location --request GET
+      'https://developer-api.goodera.com/opportunities/{id}' --header 'x-api-key:
+      <YOUR-API-KEY>'.
+    rotation_documented: false
+    expiry_documented: false
+    scopes: none
+    key_prefix_documented: false
+  unauthenticated_surface:
+  - path: /master-data/timezone
+    note: Documented as not requiring the API key.
+  - path: /master-data/country
+    note: Documented as not requiring the API key.
+  - path: /master-data/language
+    note: Documented as not requiring the API key.
+  key_acquisition:
+    self_service: false
+    mechanism: sales-gated request form
+    detail: >-
+      The API reference page carries a "Request access" form asking only for a company
+      email address, and confirms "Our team will follow up within 24 hours!". There is no
+      developer signup, no self-service key issuance, and no console where a key can be
+      generated or rotated.
+    url: https://www.goodera.com/resources/api
+- surface: Goodera MCP Server
+  base_url: https://mcp.goodera.com/mcp
+  schemes:
+  - id: none
+    type: none
+    description: >-
+      No authentication is enforced at the MCP protocol layer for discovery. initialize and
+      tools/list both returned HTTP 200 with no credential supplied and no OAuth challenge.
+    verified: probed
+  oauth_discovery:
+    oauth_protected_resource: 404
+    oauth_authorization_server: 404
+    note: >-
+      RFC 9728 protected-resource metadata is not served, so an MCP client has no way to
+      discover an authorization server for this endpoint.
+  caveat: >-
+    Anonymous discovery is established by probe. API Evangelist did not invoke any tool, so
+    whether tool EXECUTION is also anonymous is not established here.
+observations:
+- id: no-oauth-anywhere
+  note: >-
+    Neither surface offers OAuth 2.0, OpenID Connect, or scoped delegation. There is no
+    per-user consent model and no way for an end volunteer to authorize a third party
+    against their own data; a partner holds one tenant-wide key.
+- id: no-scope-surface
+  note: >-
+    Because the only credential is a single static header key, there is no scopes artifact
+    to write. Permissions are all-or-nothing at the key level.
+- id: no-mtls-or-signing
+  note: No mutual TLS, request signing, or webhook signature scheme is documented.
+- id: transport-security
+  note: >-
+    Both hosts negotiate TLSv1.3. HSTS is present on www.goodera.com (max-age 31536000) but
+    absent on developer-api.goodera.com and mcp.goodera.com. See
+    security/goodera-domain-security.yml.

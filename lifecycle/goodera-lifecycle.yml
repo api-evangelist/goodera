@@ -1,0 +1,89 @@
+generated: '2026-08-22'
+method: searched
+source: https://www.goodera.com/resources/api
+description: >-
+  Lifecycle posture for the Goodera API surfaces. Searched across the provider's API
+  reference, newsroom, blog and the full 3,341-URL sitemap. No pointer for StatusPage,
+  Deprecation or ChangeLog is emitted in apis.yml, because none of those surfaces exists.
+versioning:
+  policy_published: false
+  scheme: null
+  in_path: false
+  note: >-
+    No version appears in any published path. The API host's error bodies disclose an internal
+    prefix /v2/developer-api/v1/, so the service is internally versioned, but that version is
+    not exposed as a contract a partner can pin to or migrate between.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    No deprecation policy, no notice period, and no RFC 8594 Sunset or Deprecation header is
+    documented or observed. A partner has no published guarantee of how much warning they get
+    before a breaking change.
+status_page:
+  exists: false
+  url: null
+  evidence:
+  - url: https://status.goodera.com
+    status: null
+    finding: Host does not resolve in DNS.
+  - url: https://www.goodera.com/sitemap.xml
+    status: 200
+    finding: No status, uptime, or incident page in 3,341 sitemap URLs.
+  note: >-
+    Goodera operates a booking and scheduling surface for real, time-bound events with
+    nonprofits and publishes no operational status channel at all.
+changelog:
+  exists: false
+  url: null
+  evidence:
+  - url: https://www.goodera.com/sitemap.xml
+    status: 200
+    finding: >-
+      No changelog, release-notes, product-updates or what's-new page exists in the sitemap.
+      Product news is announced as marketing posts under /news and /blog with no version
+      association and no API scope.
+  note: >-
+    Because there is no changelog, the only way a partner learns the API changed is by
+    breaking. NO ChangeLog pointer is emitted.
+sla:
+  published: false
+  uptime_target: null
+  support_response_target: null
+  note: >-
+    No SLA or uptime commitment is published. The only published response commitment found is
+    on the API access request form - "Our team will follow up within 24 hours!" - which is a
+    sales response time, not a service level.
+support:
+  channels:
+  - type: email
+    value: partnerships@goodera.com
+    scope: general and partnership enquiries
+  - type: email
+    value: nonprofitpartners@goodera.com
+    scope: nonprofit partnerships
+  - type: web-form
+    url: https://www.goodera.com/about/contact-us
+  developer_specific_channel: false
+  note: >-
+    There is no developer support channel, community forum, or help center. A partner with an
+    API problem writes to the partnerships mailbox.
+maturity_signals:
+- id: api-launched-with-benevity
+  note: >-
+    Goodera announced the Developer API alongside a Benevity integration going live, framing
+    it as a partner-integration surface rather than a general developer product.
+  source: https://www.goodera.com/news/goodera-and-benevity-api-integration-goes-live-enabling-faster-scalable-corporate-volunteering
+- id: mcp-server-launched
+  note: >-
+    Goodera announced an MCP server, self-describing as the first social impact company to do
+    so. The running server reports version 1.14.1, which indicates active development.
+  source: https://www.goodera.com/blog/goodera-launches-mcp-server
+- id: mcp-endpoint-undocumented
+  note: >-
+    The MCP server is announced but its endpoint URL is never published. API Evangelist
+    located it by DNS resolution and protocol handshake. A prospective user reading Goodera's
+    own announcement cannot connect to it.

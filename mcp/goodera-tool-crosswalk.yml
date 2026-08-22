@@ -1,0 +1,172 @@
+generated: '2026-08-22'
+method: derived
+source: >-
+  mcp/goodera-mcp-tools.json (probed tools/list from https://mcp.goodera.com/mcp) bound
+  against the published REST reference at https://www.goodera.com/resources/api
+description: >-
+  Binds each probed Goodera MCP tool to the backing Developer API operation it most
+  plausibly fronts. IMPORTANT CAVEAT ON CONFIDENCE: Goodera publishes no OpenAPI
+  document, so there are no operationIds to bind to and no request/response schema to
+  compare. The rest[] values below are the documented HTTP method + path from Goodera's
+  own API reference page, and every binding is therefore by resource name and semantics
+  only. Nothing here was verified by calling either surface.
+surfaces:
+  openapi:
+    present: false
+    note: >-
+      No OpenAPI/Swagger document is published. Probed on the API host root and the docs
+      host - /openapi.json, /openapi.yaml, /swagger.json, /v1/openapi.json, /api-docs,
+      /docs and /redoc all returned HTTP 500 NotFoundException from the NestJS app behind
+      developer-api.goodera.com. The REST surface is documented in prose HTML only.
+  rest_reference:
+    url: https://www.goodera.com/resources/api
+    base_url: https://developer-api.goodera.com
+    gated: false
+    auth: x-api-key header
+  graphql:
+    present: false
+  mcp:
+    url: https://mcp.goodera.com/mcp
+    gated: false
+    note: tools/list answered anonymously; 19 tools with full inputSchema captured verbatim
+crosswalk:
+- tool: search-opportunities
+  category: catalog
+  rest:
+  - GET /opportunities
+  binding: resource-name-and-semantics
+  confidence: medium
+  note: >-
+    Both surface a paginated opportunity search. Parameters differ - REST filters on
+    countryCode/durations/eventLocationType, the MCP tool on a free-text query plus
+    ActivityFormat - so they are related but not identical projections.
+- tool: retrieving-opportunity
+  category: catalog
+  rest:
+  - GET /opportunities/{id}
+  binding: resource-name-and-semantics
+  confidence: medium
+- tool: listing-events
+  category: events
+  rest:
+  - GET /events/{eventId}
+  binding: partial
+  confidence: low
+  note: >-
+    The REST reference documents only a single-event fetch; no list-events REST operation
+    is published. The MCP tool is a broader collection query with time-range, state,
+    client and champion filters that has no documented REST equivalent.
+- tool: retrieving-event
+  category: events
+  rest:
+  - GET /events/{eventId}
+  binding: resource-name-and-semantics
+  confidence: medium
+- tool: retrieving-event-participation-details
+  category: events
+  rest:
+  - POST /participation
+  binding: inverse
+  confidence: low
+  note: >-
+    The REST operation writes participation; the MCP tool reads it back. They act on the
+    same resource in opposite directions, so this is a domain pairing rather than a
+    method binding.
+- tool: finding-all-master-data
+  category: master-data
+  rest:
+  - GET /master-data/timezone
+  - GET /master-data/country
+  - GET /master-data/language
+  binding: composite
+  confidence: medium
+  note: One MCP tool spans the three documented unauthenticated master-data endpoints.
+- tool: finding-master-data-by-domain
+  category: master-data
+  rest:
+  - GET /master-data/timezone
+  - GET /master-data/country
+  - GET /master-data/language
+  binding: composite
+  confidence: medium
+- tool: finding-master-data-by-domain-and-type
+  category: master-data
+  rest:
+  - GET /master-data/timezone
+  - GET /master-data/country
+  - GET /master-data/language
+  binding: composite
+  confidence: medium
+mcp_only:
+- tool: retrieving-event-rating-details
+  reason: No event-rating operation appears in the published REST reference.
+- tool: retrieving-event-shipment-details
+  reason: >-
+    Physical kit/shipment tracking is exposed to agents but has no documented REST
+    counterpart.
+- tool: retrieving-event-collateral-details
+  reason: No event-collateral operation appears in the published REST reference.
+- tool: listing-clients
+  reason: >-
+    Client (enterprise customer) enumeration is an internal-domain surface with no
+    documented partner REST equivalent.
+- tool: retrieving-brand-guidelines
+  reason: Per-client brand guidelines are not exposed in the published REST reference.
+- tool: listing-champions
+  reason: Volunteer champions are not exposed in the published REST reference.
+- tool: sending-email-with-template
+  reason: >-
+    Templated transactional email dispatch. A write/side-effect capability with no
+    documented REST equivalent on the partner API.
+- tool: sending-plain-html-email
+  reason: >-
+    Plain-HTML email dispatch through a selectable adapter. Write/side-effect, no
+    documented REST equivalent.
+- tool: search-activities
+  reason: >-
+    Activities are a distinct catalog layer beneath opportunities and are not exposed by
+    the published REST reference, which surfaces opportunities only.
+- tool: retrieving-activity
+  reason: Same as search-activities - no activity resource in the REST reference.
+- tool: build-execution-plan
+  reason: >-
+    Agent-orchestration helper that plans a multi-tool sequence. It is not an API
+    operation at all and has no REST analogue by construction.
+rest_only:
+- rest: POST /events
+  reason: >-
+    Event creation is available to REST partners but no create-event tool is exposed to
+    agents. The MCP surface is read-mostly over events.
+- rest: POST /registrations
+  reason: No volunteer-registration tool is exposed over MCP.
+- rest: DELETE /registrations/{registrationId}
+  reason: No registration-cancellation tool is exposed over MCP.
+- rest: GET /registrations/by_event/{eventId}
+  reason: No registration-listing tool is exposed over MCP.
+- rest: POST /participation
+  reason: >-
+    Participation is written over REST only; the MCP surface can read participation
+    details but not record them.
+coverage:
+  mcp_tools_total: 19
+  mcp_tools_bound: 8
+  mcp_tools_unbound: 11
+  rest_operations_documented: 13
+  rest_operations_bound: 8
+  rest_operations_unbound: 5
+  bindings_high_confidence: 0
+  bindings_medium_confidence: 6
+  bindings_low_confidence: 2
+findings:
+- id: two-surfaces-two-products
+  note: >-
+    The MCP server and the Developer API are not two projections of one contract. The REST
+    API is a write-capable partner integration surface (create events, register
+    volunteers, record hours). The MCP server is a read-mostly internal-operations surface
+    (clients, champions, shipments, collateral, brand guidelines) plus two email
+    send tools. Only 8 of 19 tools map to anything documented on the REST side.
+- id: write-asymmetry
+  note: >-
+    Every REST write operation is absent from MCP, and both MCP write operations
+    (email send) are absent from REST. An agent and a partner integration therefore have
+    disjoint mutation capabilities.

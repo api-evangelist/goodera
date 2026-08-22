@@ -1,0 +1,314 @@
+generated: '2026-08-22'
+method: derived
+source: >-
+  mcp/goodera-mcp-tools.json (19 probed MCP tool inputSchemas from https://mcp.goodera.com/mcp)
+  and the documented response fields at https://www.goodera.com/resources/api
+description: >-
+  Entity-relationship graph for the Goodera platform. Derived rather than searched - Goodera
+  publishes no object reference and no OpenAPI components. The relationships below are read
+  from two real sources: the MCP expand enums, which name traversable relations explicitly and
+  in the platform's own dotted path notation, and the documented REST response fields.
+  Relationships marked inferred_from: expand-path are the platform's own naming, not ours.
+identifier_convention:
+  style: 24-character hexadecimal MongoDB ObjectId
+  prefixed: false
+  examples:
+  - 610cc05de85e70001106f7d9
+  - 65f96d1e1d38620012d38261
+  note: >-
+    Identifiers are not type-prefixed, so an id alone does not disclose which entity it
+    addresses. The underlying store is MongoDB.
+entities:
+- name: Opportunity
+  description: >-
+    A bookable volunteering offering that a client can turn into an event. The primary object
+    exposed to partners over REST.
+  surfaces:
+  - REST GET /opportunities
+  - REST GET /opportunities/{id}
+  - MCP search-opportunities
+  - MCP retrieving-opportunity
+  fields_documented:
+  - id
+  - name
+  - eventLabel (e.g. TEAM_BASED)
+  - description
+  - richTextDescription
+  - duration (number[], minutes)
+  - countries (string[], ISO codes)
+  - languages (string[])
+  - beneficiaries (string[])
+  - causes (string[])
+  - type (e.g. AUDIOBOOK)
+  - deck
+  - isPaid (boolean)
+  relationships:
+  - to: Activity
+    kind: belongs_to
+    via: opportunity.activity
+    inferred_from: expand-path
+  - to: Event
+    kind: has_many
+    via: opportunityId on event creation
+    inferred_from: documented-request-field
+  formats:
+  - in_office
+  - virtual
+  - outdoor
+  - kiosk
+- name: Activity
+  description: >-
+    The catalog layer beneath an opportunity - the underlying volunteering activity, with
+    variants and beneficiary attributes. Exposed only over MCP; absent from the REST reference.
+  surfaces:
+  - MCP search-activities
+  - MCP retrieving-activity
+  relationships:
+  - to: ActivityVariant
+    kind: has_many
+    via: variants
+    inferred_from: expand-path
+  - to: BeneficiaryAttribute
+    kind: has_many
+    via: beneficiaryAttributes
+    inferred_from: expand-path
+  segmentation:
+    business_unit:
+    - global
+    - india
+    deliverable_type:
+    - physical
+    - digital
+    - not_available
+  note: >-
+    The business_unit enum (global / india) discloses that the catalog is partitioned by
+    operating region, a fact not stated anywhere in the public documentation.
+- name: Event
+  description: >-
+    A scheduled instance of an opportunity, booked by a client for a date, timezone and
+    location. The richest entity in the model and the hub of the graph.
+  surfaces:
+  - REST POST /events
+  - REST GET /events/{eventId}
+  - MCP listing-events
+  - MCP retrieving-event
+  fields_documented:
+  - opportunityId
+  - startTimeStamp (ISO 8601)
+  - endTimeStamp (ISO 8601)
+  - timezone (from master-data list)
+  - country
+  - language
+  - email
+  - name
+  - expectedVolunteerCount
+  - eventLocation (city, country, coordinates, address)
+  - addressLine
+  - createdAt
+  states:
+  - upcoming
+  - ongoing
+  - completed
+  - cancelled
+  relationships:
+  - to: Opportunity
+    kind: belongs_to
+    via: opportunity.activity
+    inferred_from: expand-path
+  - to: Client
+    kind: belongs_to
+    via: client
+    inferred_from: expand-path
+  - to: Champion
+    kind: has_many
+    via: eventChampion.champion
+    inferred_from: expand-path
+  - to: Partner
+    kind: belongs_to
+    via: partner
+    inferred_from: expand-path
+  - to: Address
+    kind: has_one
+    via: address
+    inferred_from: expand-path
+  - to: Attendee
+    kind: has_many
+    via: attendeeDenorm
+    inferred_from: expand-path
+  - to: Goodfie
+    kind: has_many
+    via: goodfies
+    inferred_from: expand-path
+  - to: ActivityVariant
+    kind: has_one
+    via: variant
+    inferred_from: expand-path
+  - to: User
+    kind: belongs_to
+    via: csm.user
+    inferred_from: expand-path
+    role: customer success manager
+  - to: User
+    kind: has_many
+    via: eventHosts.host.user
+    inferred_from: expand-path
+    role: event host
+  - to: User
+    kind: belongs_to
+    via: programManager.user
+    inferred_from: expand-path
+    role: program manager
+  - to: Meeting
+    kind: has_one
+    via: eventMeeting.meeting.meetingAccount
+    inferred_from: expand-path
+  - to: Context
+    kind: has_one
+    via: context
+    inferred_from: expand-path
+  - to: Registration
+    kind: has_many
+    via: eventId
+    inferred_from: documented-request-field
+  - to: Participation
+    kind: has_many
+    via: eventId
+    inferred_from: documented-request-field
+  - to: Rating
+    kind: has_one
+    via: retrieving-event-rating-details
+    inferred_from: mcp-tool
+  - to: Shipment
+    kind: has_one
+    via: retrieving-event-shipment-details
+    inferred_from: mcp-tool
+  - to: Collateral
+    kind: has_many
+    via: retrieving-event-collateral-details
+    inferred_from: mcp-tool
+- name: Client
+  description: >-
+    The enterprise customer that books events. Exposed over MCP only; a partner using the REST
+    API never sees this object.
+  surfaces:
+  - MCP listing-clients
+  - MCP retrieving-brand-guidelines
+  relationships:
+  - to: Event
+    kind: has_many
+    via: clientId filter
+    inferred_from: mcp-input-field
+  - to: BrandGuidelines
+    kind: has_one
+    via: retrieving-brand-guidelines
+    inferred_from: mcp-tool
+  - to: OrganizationConfiguration
+    kind: has_one
+    via: webhookUrl / inPersonWebhookUrl config object
+    inferred_from: documented-response-field
+- name: Champion
+  description: >-
+    An employee who leads or coordinates volunteering at a client. Exposed over MCP only.
+  surfaces:
+  - MCP listing-champions
+  relationships:
+  - to: Client
+    kind: belongs_to
+    via: client
+    inferred_from: expand-path
+  - to: Customer
+    kind: belongs_to
+    via: customer
+    inferred_from: expand-path
+  - to: Event
+    kind: has_many
+    via: eventChampion.champion
+    inferred_from: expand-path
+- name: Registration
+  description: A volunteer's enrolment on an event, keyed by email address.
+  surfaces:
+  - REST POST /registrations
+  - REST DELETE /registrations/{registrationId}
+  - REST GET /registrations/by_event/{eventId}
+  fields_documented:
+  - registrationId
+  - eventId
+  - email
+  relationships:
+  - to: Event
+    kind: belongs_to
+    via: eventId
+    inferred_from: documented-request-field
+  note: >-
+    The only entity with a documented delete operation, and therefore the only reversible write
+    on the API. See the reversibility block in conventions/goodera-conventions.yml.
+- name: Participation
+  description: >-
+    A record that a volunteer attended, which is what becomes a reportable volunteer hour.
+  surfaces:
+  - REST POST /participation
+  - MCP retrieving-event-participation-details
+  fields_documented:
+  - eventId
+  - email
+  relationships:
+  - to: Event
+    kind: belongs_to
+    via: eventId
+    inferred_from: documented-request-field
+  note: >-
+    Written over REST, read over MCP. No correction or void operation is documented on either
+    surface.
+- name: Shipment
+  description: >-
+    Physical fulfilment for kit-based volunteering (boxes, sender and recipient addresses).
+    Exposed over MCP only.
+  surfaces:
+  - MCP retrieving-event-shipment-details
+  relationships:
+  - to: Event
+    kind: belongs_to
+    via: eventId
+    inferred_from: mcp-tool
+  - to: Box
+    kind: has_many
+    via: boxes
+    inferred_from: expand-path
+  - to: Address
+    kind: has_one
+    via: recipientAddress
+    inferred_from: expand-path
+  - to: Address
+    kind: has_one
+    via: senderAddress
+    inferred_from: expand-path
+- name: MasterData
+  description: >-
+    Key/value reference data partitioned by domain and type - the vocabulary layer the rest of
+    the model validates against.
+  surfaces:
+  - REST GET /master-data/timezone
+  - REST GET /master-data/country
+  - REST GET /master-data/language
+  - MCP finding-all-master-data
+  - MCP finding-master-data-by-domain
+  - MCP finding-master-data-by-domain-and-type
+  note: >-
+    The only unauthenticated part of the REST API, and the closest thing Goodera publishes to a
+    vocabulary. Event creation is documented as requiring a timezone drawn from this list.
+findings:
+- id: mcp-model-is-larger-than-rest-model
+  note: >-
+    Eight entities (Activity, Client, Champion, Shipment, Rating, Collateral, BrandGuidelines,
+    Attendee) are reachable over MCP and invisible over REST. The agent surface exposes more of
+    the domain than the documented partner surface does.
+- id: expand-paths-are-the-only-schema-documentation
+  note: >-
+    Goodera publishes no object reference, so the MCP expand enums are the single most
+    informative description of its data model available to the public - and they exist only
+    because the MCP server answers tools/list anonymously.
+- id: email-as-the-volunteer-identifier
+  note: >-
+    Registrations and participation are keyed on a raw email address rather than a volunteer
+    identifier. There is no documented volunteer entity, so personal data is the join key across
+    the two write surfaces.

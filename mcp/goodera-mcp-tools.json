@@ -1,0 +1,1161 @@
+{
+  "$comment": "Verbatim MCP tools/list result probed anonymously from https://mcp.goodera.com/mcp on 2026-08-22 by API Evangelist. Unmodified server response payload.",
+  "serverInfo": {
+    "name": "Goodera MCP",
+    "version": "1.14.1"
+  },
+  "protocolVersion": "2025-06-18",
+  "capabilities": {
+    "experimental": {},
+    "prompts": {
+      "listChanged": true
+    },
+    "resources": {
+      "subscribe": false,
+      "listChanged": true
+    },
+    "tools": {
+      "listChanged": true
+    }
+  },
+  "instructions": "You are a helpful assistant that can help with a variety of tasks. You are currently working for Goodera, a company that provides a platform for volunteering and events.",
+  "tools": [
+    {
+      "name": "listing-events",
+      "description": "List all volunteering events. These are the events that are created by the clients of Goodera. These are the events that are open for volunteering. These are the events that are currently active or cancelled.",
+      "inputSchema": {
+        "$defs": {
+          "EventOrder": {
+            "enum": [
+              "-startTimeStamp",
+              "startTimeStamp",
+              "-createdAt",
+              "createdAt"
+            ],
+            "title": "EventOrder",
+            "type": "string"
+          },
+          "EventState": {
+            "enum": [
+              "upcoming",
+              "ongoing",
+              "completed",
+              "cancelled"
+            ],
+            "title": "EventState",
+            "type": "string"
+          },
+          "ListEventsInput": {
+            "properties": {
+              "startTime": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Start of the time range within which the events with startTime are to be fetched",
+                "title": "Starttime"
+              },
+              "endTime": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "End of the time range within which the events with endTime are to be fetched",
+                "title": "Endtime"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/EventState"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "State of the event. Can be upcoming, ongoing, completed, or cancelled."
+              },
+              "limit": {
+                "anyOf": [
+                  {
+                    "maximum": 100,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 10,
+                "description": "Number of events to return. Default is 10. Maximum is 100.",
+                "title": "Limit"
+              },
+              "offset": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 0,
+                "description": "Offset for pagination. Default is 0.",
+                "title": "Offset"
+              },
+              "order": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/EventOrder"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Order of the events. Can be -startTimeStamp, startTimeStamp, -createdAt, or createdAt."
+              },
+              "championId": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Identifiers of the champions. This is used to filter the events by the champions who are associated with the event.",
+                "title": "Championid"
+              },
+              "clientId": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Identifiers of the clients. This is used to filter the events by the clients who are associated with the event.",
+                "title": "Clientid"
+              },
+              "q": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Query to search for events. This is used to search for events by the event name",
+                "title": "Q"
+              }
+            },
+            "title": "ListEventsInput",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/ListEventsInput",
+            "title": "Request"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "retrieving-event",
+      "description": "Retrieve a specific event by its identifier. This gets the event details including the event name, description, start time, end time, location, and other details. ",
+      "inputSchema": {
+        "$defs": {
+          "EventExpandFields": {
+            "enum": [
+              "eventChampion.champion",
+              "client",
+              "opportunity.activity",
+              "partner",
+              "address",
+              "attendeeDenorm",
+              "goodfies",
+              "variant",
+              "csm.user",
+              "eventHosts.host.user",
+              "context",
+              "eventMeeting.meeting.meetingAccount",
+              "programManager.user"
+            ],
+            "title": "EventExpandFields",
+            "type": "string"
+          },
+          "RetrieveEventInput": {
+            "properties": {
+              "expand": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/$defs/EventExpandFields"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "",
+                "title": "Expand"
+              }
+            },
+            "title": "RetrieveEventInput",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "eventId": {
+            "description": "The id of the event to retrieve",
+            "title": "Eventid",
+            "type": "string"
+          },
+          "request": {
+            "$ref": "#/$defs/RetrieveEventInput",
+            "title": "Request"
+          }
+        },
+        "required": [
+          "eventId",
+          "request"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "retrieving-event-participation-details",
+      "description": "Retrieve the participation details of a specific event by its identifier. This gets the participation details of the event including the number of participants, the number of volunteers, number of kits",
+      "inputSchema": {
+        "properties": {
+          "eventId": {
+            "description": "The id of the event to retrieve the participation details for",
+            "title": "Eventid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventId"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "retrieving-event-rating-details",
+      "description": "Retrieve the rating details of a specific event by its identifier. This gets the rating details of the event including the number of ratings, the average rating, and the number of ratings per star.",
+      "inputSchema": {
+        "properties": {
+          "eventId": {
+            "description": "The id of the event to retrieve the rating details for",
+            "title": "Eventid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventId"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "retrieving-event-shipment-details",
+      "description": "Retrieve the shipment details of a specific event by its identifier. This gets the shipment details of the event including the number of boxes, the number of items, and the number of items per box.",
+      "inputSchema": {
+        "$defs": {
+          "EventShipmentExpand": {
+            "enum": [
+              "boxes",
+              "recipientAddress",
+              "senderAddress"
+            ],
+            "title": "EventShipmentExpand",
+            "type": "string"
+          },
+          "RetrieveShipmentDetailsInput": {
+            "properties": {
+              "eventId": {
+                "description": "The identifier of the event for which the shipment details are to be retrieved",
+                "title": "Eventid",
+                "type": "string"
+              },
+              "expand": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/$defs/EventShipmentExpand"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Expand the additional fields in the shipment details. ",
+                "title": "Expand"
+              }
+            },
+            "required": [
+              "eventId"
+            ],
+            "title": "RetrieveShipmentDetailsInput",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/RetrieveShipmentDetailsInput",
+            "title": "Request"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "retrieving-event-collateral-details",
+      "description": "Retrieve the collateral details of a specific event by its identifier. This gets the collateral details of the event including the flyer, the KBYG, the event deck and so on.",
+      "inputSchema": {
+        "properties": {
+          "eventId": {
+            "description": "The id of the event to retrieve the collateral details for",
+            "title": "Eventid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventId"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "listing-clients",
+      "description": "Find all clients associated with the Goodera's systems. These are the clients who have created events, champions, and opportunities.",
+      "inputSchema": {
+        "$defs": {
+          "ClientOrder": {
+            "enum": [
+              "-createdAt",
+              "createdAt"
+            ],
+            "title": "ClientOrder",
+            "type": "string"
+          },
+          "ListClientInput": {
+            "properties": {
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The number of clients to return",
+                "title": "Limit"
+              },
+              "offset": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The offset of the clients to return",
+                "title": "Offset"
+              },
+              "order": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/ClientOrder"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The order of the clients to return"
+              },
+              "q": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The query to search for clients by name",
+                "title": "Q"
+              }
+            },
+            "title": "ListClientInput",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/ListClientInput",
+            "title": "Request"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "retrieving-brand-guidelines",
+      "description": "Retrieve the brand guidelines for a specific client. This includes the primary color, secondary color, and instructions for the client to send notifications",
+      "inputSchema": {
+        "properties": {
+          "clientId": {
+            "description": "The id of the client to retrieve the brand guidelines for",
+            "title": "Clientid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "clientId"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "listing-champions",
+      "description": "Find all champions for a specific event. These are the champions who are associated with events. These are the people who have organized the event, will take part in bringing volunteers to the event, and will be the ones to review the volunteers after the event.",
+      "inputSchema": {
+        "$defs": {
+          "ChampionExpand": {
+            "enum": [
+              "customer",
+              "client"
+            ],
+            "title": "ChampionExpand",
+            "type": "string"
+          },
+          "ListChampionInput": {
+            "properties": {
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The limit of the champions to return",
+                "title": "Limit"
+              },
+              "offset": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The offset of the champions to return",
+                "title": "Offset"
+              },
+              "q": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The query to search for champions by first name, last name, or email",
+                "title": "Q"
+              },
+              "clientId": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The client id to filter the champions by. This is the client id of the client that the champion belongs to",
+                "title": "Clientid"
+              },
+              "expand": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/$defs/ChampionExpand"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "",
+                "title": "Expand"
+              }
+            },
+            "title": "ListChampionInput",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/ListChampionInput",
+            "title": "Request"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "finding-master-data-by-domain",
+      "description": "Master data is a key value pair that can be used to store static data which is used across the application. This tool is used to find master data by domain which is a wider search on the master data table",
+      "inputSchema": {
+        "properties": {
+          "domain": {
+            "description": "The domain of the master data",
+            "title": "Domain",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "finding-master-data-by-domain-and-type",
+      "description": "Master data is a key value pair that can be used to store static data which is used across the application. This tool is used to find master data by domain and type which is a more specific search on the master data table",
+      "inputSchema": {
+        "properties": {
+          "domain": {
+            "description": "The domain of the master data",
+            "title": "Domain",
+            "type": "string"
+          },
+          "type": {
+            "description": "The type of the master data",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain",
+          "type"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "finding-all-master-data",
+      "description": "Master data is a key value pair that can be used to store static data which is used across the application. This tool is used to find all master data",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "sending-email-with-template",
+      "description": "Send an email using a predefined template. This is a tool which uses different services internally to send an email.",
+      "inputSchema": {
+        "$defs": {
+          "SendWithTemplateParams": {
+            "properties": {
+              "key": {
+                "description": "Key of the email template, which is to be used to send the email",
+                "title": "Key",
+                "type": "string"
+              },
+              "params": {
+                "additionalProperties": true,
+                "description": "Parameters to be used to send the email",
+                "title": "Params",
+                "type": "object"
+              },
+              "to": {
+                "description": "List of emails to send the email to",
+                "items": {
+                  "type": "string"
+                },
+                "title": "To",
+                "type": "array"
+              },
+              "fromEmail": {
+                "description": "Email address to send the email from",
+                "title": "Fromemail",
+                "type": "string"
+              },
+              "subject": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Subject of the email, if not provided, the subject from the template will be used",
+                "title": "Subject"
+              }
+            },
+            "required": [
+              "key",
+              "params",
+              "to",
+              "fromEmail"
+            ],
+            "title": "SendWithTemplateParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/SendWithTemplateParams",
+            "title": "Request"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "sending-plain-html-email",
+      "description": "Send an email using plain html. This is a tool which uses different services internally to send an email.",
+      "inputSchema": {
+        "$defs": {
+          "EmailAdapterIdentifier": {
+            "enum": [
+              "sendgrid"
+            ],
+            "title": "EmailAdapterIdentifier",
+            "type": "string"
+          },
+          "SendEmailParams": {
+            "properties": {
+              "type": {
+                "$ref": "#/$defs/EmailAdapterIdentifier",
+                "description": "Type of the email adapter to be used to send the email. \n "
+              },
+              "to": {
+                "description": "List of emails to send the email to",
+                "items": {
+                  "type": "string"
+                },
+                "title": "To",
+                "type": "array"
+              },
+              "fromEmail": {
+                "description": "Email address to send the email from",
+                "title": "Fromemail",
+                "type": "string"
+              },
+              "subject": {
+                "description": "Subject of the email",
+                "title": "Subject",
+                "type": "string"
+              },
+              "body": {
+                "description": "Body of the email",
+                "title": "Body",
+                "type": "string"
+              },
+              "cc": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "List of emails to send the email to",
+                "title": "Cc"
+              },
+              "bcc": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "List of emails to send the email to",
+                "title": "Bcc"
+              }
+            },
+            "required": [
+              "type",
+              "to",
+              "fromEmail",
+              "subject",
+              "body"
+            ],
+            "title": "SendEmailParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/SendEmailParams",
+            "title": "Request"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "search-activities",
+      "description": "Search for activities based on the query. These are activities that are available to be volunteered for.  This is a free text search and will return activities that match the query. This must define what the user expects as the activities they are interested in. This should not just be keywords but a well formed paragraph of requirements",
+      "inputSchema": {
+        "$defs": {
+          "ActivityBusinessUnit": {
+            "enum": [
+              "global",
+              "india"
+            ],
+            "title": "ActivityBusinessUnit",
+            "type": "string"
+          },
+          "DeliverableType": {
+            "enum": [
+              "physical",
+              "digital",
+              "not_available"
+            ],
+            "title": "DeliverableType",
+            "type": "string"
+          },
+          "SearchActivityInput": {
+            "properties": {
+              "query": {
+                "description": "The query to search for activities by name. This is a free text search and will return activities that match the query. This must define what the user expects as the activities they are interested in. This should not just be keywords but a well formed paragraph of requirements",
+                "title": "Query",
+                "type": "string"
+              },
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 10,
+                "description": "The number of the activities to return. This is the maximum number of activities that will be returned. The actual number of activities returned may be less than this number.",
+                "title": "Limit"
+              },
+              "offset": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 0,
+                "description": "The offset of the activities to return. This is the number of activities to skip. This is used to paginate the activities.",
+                "title": "Offset"
+              },
+              "businessUnit": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/$defs/ActivityBusinessUnit"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The business unit of the activity. This implies the business unit of the organization that is conducting the activity. ",
+                "title": "Businessunit"
+              },
+              "deliverableType": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/$defs/DeliverableType"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The type of the deliverable. ",
+                "title": "Deliverabletype"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "title": "SearchActivityInput",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/SearchActivityInput",
+            "title": "Request"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "retrieving-activity",
+      "description": "Retrieve an activity by its id to retrieve additional details about the activity",
+      "inputSchema": {
+        "$defs": {
+          "ActivityListingExpandFields": {
+            "enum": [
+              "variants",
+              "beneficiaryAttributes"
+            ],
+            "title": "ActivityListingExpandFields",
+            "type": "string"
+          },
+          "RetrieveActivityInput": {
+            "properties": {
+              "id": {
+                "description": "The id of the activity to retrieve",
+                "title": "Id",
+                "type": "string"
+              },
+              "expand": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/$defs/ActivityListingExpandFields"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "",
+                "title": "Expand"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "title": "RetrieveActivityInput",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/RetrieveActivityInput",
+            "title": "Request"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "build-execution-plan",
+      "description": "This tool is used for building an execution plan to help resolve user queries. Only use an execution plan when it fits the query the user has. \n \n            These are the execution plans available for different types of execution. \n            The execution plan must be used only at the start of execution and not after a certain plan has already been built\n            The key is a unique identifier and the description is for defining what the plan is meant to do.\n        Key: data-analytics Description: This is an execution plan for anything that involves reporting data. For anything that involves building a view on top of large amounts of data or includes querying the database for anything which includes multiple tables or entities\nKey: email-content-generation Description: This is an execution plan used for generating notification or email content. If the user asks for generating content for a certain email this plan should be used\nKey: generic Description: Generic queries which do not belong to any other execution plans",
+      "inputSchema": {
+        "properties": {
+          "planId": {
+            "description": "The id of the plan to build",
+            "title": "Planid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "planId"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "search-opportunities",
+      "description": "Search for opportunities based on the query. These are opportunities that are available to be volunteered for.  This is a free text search and will return opportunities that match the query. This must define what the user expects as the opportunities they are interested in. This should not just be keywords but a well formed paragraph of requirements. Opportunities are basically activities for a a client, you must search this only when a user specifies a certain client to be used",
+      "inputSchema": {
+        "$defs": {
+          "ActivityFormat": {
+            "enum": [
+              "in_office",
+              "virtual",
+              "outdoor",
+              "kiosk"
+            ],
+            "title": "ActivityFormat",
+            "type": "string"
+          },
+          "SearchOpportunityInput": {
+            "properties": {
+              "query": {
+                "description": "The query to search for opportunities by name. This is a free text search and will return opportunities that match the query. This must define what the user expects as the opportunities they are interested in. This should not just be keywords but a well formed paragraph of requirements",
+                "title": "Query",
+                "type": "string"
+              },
+              "clientId": {
+                "description": "The client id of the opportunity. This is the id of the client that is conducting the opportunity.",
+                "title": "Clientid",
+                "type": "string"
+              },
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 10,
+                "description": "The number of the activities to return. This is the maximum number of activities that will be returned. The actual number of activities returned may be less than this number.",
+                "title": "Limit"
+              },
+              "offset": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 0,
+                "description": "The offset of the activities to return. This is the number of activities to skip. This is used to paginate the activities.",
+                "title": "Offset"
+              },
+              "format": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/$defs/ActivityFormat"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The format of the opportunity. ",
+                "title": "Format"
+              }
+            },
+            "required": [
+              "query",
+              "clientId"
+            ],
+            "title": "SearchOpportunityInput",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/SearchOpportunityInput",
+            "title": "Request"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "retrieving-opportunity",
+      "description": "Retrieve an opportunity by its id to retrieve additional details about the opportunity",
+      "inputSchema": {
+        "properties": {
+          "id": {
+            "description": "The id of the opportunity to retrieve",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "type": "object"
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    }
+  ]
+}

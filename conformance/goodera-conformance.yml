@@ -1,0 +1,162 @@
+generated: '2026-08-22'
+method: searched
+source: https://www.goodera.com/resources/api
+description: >-
+  Standards and cross-cutting conformance assertions for Goodera, each with evidence. Every
+  entry below is judged against what Goodera itself publishes. NO Compliance pointer is
+  emitted in apis.yml - see the compliance_claims section for why.
+standards:
+- id: rest
+  conforms: true
+  evidence: >-
+    The reference states the API "is structured around REST" with JSON responses and standard
+    HTTP status codes. Resource-oriented paths (/opportunities, /events, /registrations,
+    /participation, /master-data) with GET/POST/DELETE verbs confirm it.
+- id: openapi
+  conforms: false
+  evidence: >-
+    No OpenAPI or Swagger document is published. Probed /openapi.json, /openapi.yaml,
+    /swagger.json, /v1/openapi.json, /api-docs, /docs and /redoc on
+    developer-api.goodera.com - all HTTP 500 NotFoundException - and found no spec link on the
+    docs host. The contract is prose HTML only.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No AsyncAPI document. A webhook capability exists as configuration fields but has no
+    published event catalog or payload schema.
+- id: mcp
+  conforms: true
+  version: '2025-06-18'
+  evidence: >-
+    Live handshake against https://mcp.goodera.com/mcp returned protocolVersion 2025-06-18,
+    a well-formed capabilities object, and 19 tools with valid JSON Schema inputSchema
+    definitions over streamable HTTP. This is the strongest machine-readable contract Goodera
+    publishes.
+- id: json-schema
+  conforms: true
+  evidence: >-
+    The MCP tool inputSchema definitions use JSON Schema with $defs, $ref, anyOf, enum and
+    format keywords, drafted in the 2020-12 style emitted by FastMCP.
+- id: rfc9457
+  conforms: false
+  evidence: >-
+    Errors are not application/problem+json and carry no type/title/detail/instance members.
+    See errors/goodera-problem-types.yml.
+- id: rfc9110-status-semantics
+  conforms: false
+  evidence: >-
+    Goodera documents 401 as "Unauthorized" and 403 as "Unauthenticated", inverting RFC 9110,
+    and returns HTTP 500 for routing misses that are genuinely 404.
+- id: rfc8594-sunset
+  conforms: false
+  evidence: No Sunset or Deprecation header is documented or observed.
+- id: rfc9728-oauth-protected-resource
+  conforms: false
+  evidence: >-
+    /.well-known/oauth-protected-resource returns 404 on mcp.goodera.com, so the MCP endpoint
+    publishes no protected-resource metadata.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on all three Goodera hosts.
+- id: oauth2
+  conforms: false
+  evidence: No OAuth 2.0 flow on either surface; the REST API uses a single static header key.
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 or 500 on all hosts.
+- id: pagination
+  conforms: partial
+  evidence: >-
+    A consistent page/pageSize/total/totalPages envelope is published for the REST surface, but
+    the MCP surface uses limit/offset instead, so the vendor is not internally consistent.
+- id: idempotency
+  conforms: false
+  evidence: No idempotency key or replay-safety mechanism is documented on any write operation.
+- id: iso8601
+  conforms: true
+  evidence: startTimeStamp and endTimeStamp are documented as ISO 8601.
+- id: iso3166
+  conforms: true
+  evidence: >-
+    countryCode and country parameters take ISO country codes (documented example "US"),
+    validated against the GET /master-data/country reference list.
+- id: iana-timezone
+  conforms: partial
+  evidence: >-
+    Event creation requires a timezone drawn from Goodera's own GET /master-data/timezone
+    master list. The list is published as an endpoint but its relationship to the IANA tz
+    database is not stated, so a client must fetch Goodera's list rather than rely on tz names.
+domain_standard:
+  market: corporate volunteering, CSR and social impact reporting
+  declared_in_contract: false
+  candidates_checked:
+  - id: gri-esrs-sasb
+    checked: >-
+      Sustainability disclosure frameworks (GRI, ESRS/CSRD, SASB) are the reporting standards
+      this market's output feeds. No GRI/ESRS/SASB indicator codes, taxonomy identifiers, or
+      disclosure mappings appear in any field name, enum, or schema on either the REST or MCP
+      surface.
+    result: absent
+  - id: xbrl-esef
+    checked: >-
+      No XBRL taxonomy element or ESEF tagging appears in the impact or participation data
+      model.
+    result: absent
+  - id: iati
+    checked: >-
+      IATI is the established open standard for publishing social-impact and development
+      activity data. No IATI activity identifier, organisation identifier, or element name
+      appears anywhere in the contract.
+    result: absent
+  - id: un-sdg
+    checked: >-
+      Opportunities carry "causes" and "beneficiaries" arrays, which are the natural place for
+      UN Sustainable Development Goal codes. Both were empty in every published example and no
+      SDG code list, enum, or vocabulary is defined for them.
+    result: absent-but-natural-fit
+  - id: schema-org-volunteer
+    checked: >-
+      schema.org defines VolunteerAction and Event vocabulary. The opportunity and event
+      objects use bespoke field names (eventLabel, richTextDescription, deliverableType) with
+      no JSON-LD context and no schema.org alignment.
+    result: absent
+  result: >-
+    No domain standard is declared by the contract. This is REWARD-ONLY in the rubric and
+    Goodera is not penalised for it, but it is a real interoperability observation: a buyer
+    integrating Goodera's volunteer-hour and impact data into a CSRD or GRI reporting pipeline
+    must build a bespoke mapping, because the contract expresses causes, beneficiaries and
+    impact in Goodera's own private vocabulary.
+compliance_claims:
+  first_party_published: false
+  pointer_emitted: false
+  evidence:
+  - url: https://www.goodera.com/pages/privacy
+    status: 200
+    finding: >-
+      Full page retrieved and searched. Zero occurrences of SOC 2, ISO 27001, GDPR, CCPA,
+      Standard Contractual Clauses, Data Processing Agreement, or sub-processor.
+  - url: https://www.goodera.com/security
+    status: 404
+  - url: https://www.goodera.com/trust
+    status: 404
+  - url: https://trust.goodera.com
+    status: null
+    finding: Host does not resolve in DNS.
+  - url: https://www.goodera.com/sitemap.xml
+    status: 200
+    finding: >-
+      No security, trust, compliance or certifications page exists among 3,341 sitemap URLs in
+      any of the five published locales.
+  third_party_claims:
+    note: >-
+      A third-party SaaS-risk aggregator lists Goodera as SOC 2, ISO 27001, GDPR, PCI, HIPAA,
+      FedRAMP and CSA STAR compliant. API Evangelist did NOT record this as a compliance
+      finding and emits no Compliance pointer on the strength of it. The claim is not
+      corroborated by anything Goodera publishes on its own domain, and an aggregator profile
+      is not a provider assertion. If Goodera does hold these certifications, publishing them
+      on its own site is the fix.
+  blog_claim:
+    note: >-
+      The MCP launch post states the server is "built to enterprise security standards" and
+      that "no personally identifiable information is exposed". No certification, audit, scope
+      or report is named to support it.

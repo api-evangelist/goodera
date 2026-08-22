@@ -1,0 +1,193 @@
+generated: '2026-08-22'
+method: searched
+source: https://www.goodera.com/resources/api
+docs: https://www.goodera.com/resources/api
+description: >-
+  Cross-cutting runtime semantics for the Goodera Developer API, read from the provider's
+  published API reference and cross-checked against live probes of the API host and the MCP
+  endpoint. Where a convention is absent it is recorded as absent rather than inferred.
+auth_style:
+  style: static-api-key-header
+  header: x-api-key
+  detail: See authentication/goodera-authentication.yml.
+  scoped: false
+idempotency:
+  supported: unknown
+  documented: false
+  header: null
+  scope: null
+  retention: null
+  note: >-
+    No idempotency key, no request-deduplication header, and no replay semantics are
+    documented anywhere in the reference. This matters more than usual here: POST /events
+    creates a real volunteering event with a nonprofit and POST /registrations enrols a
+    named person by email, so a retried request after a timeout has no documented protection
+    against creating a duplicate event or a duplicate enrolment. NO Idempotency pointer is
+    emitted in apis.yml, because there is no idempotency support to point at.
+pagination:
+  style: page-number
+  request_params:
+    page: number - page number to retrieve
+    pageSize: number - rows per request, example value 10
+  response_fields:
+    rows: array - the page of results
+    total: integer - total matching records, example 117
+    page: integer - current page
+    pageSize: integer - page size in effect
+    totalPages: integer - total pages, example 12
+  cursor_supported: false
+  max_page_size_documented: false
+  note: >-
+    Consistent envelope across opportunity operations. No maximum pageSize is published, so a
+    client cannot know where the server will clamp. Note the MCP surface uses a DIFFERENT
+    pagination model - limit (max 100) plus offset - so the two Goodera surfaces do not agree
+    on how to page.
+filtering:
+  opportunities:
+  - countryCode - string, ISO country, e.g. "US"
+  - durations - number[], e.g. [60,90]
+  - eventLocationType - enum VIRTUAL | IN_PERSON
+  sorting_documented: false
+  field_expansion: false
+  sparse_fieldsets: false
+  note: >-
+    The REST surface has no expand mechanism. The MCP surface does - several MCP tools accept
+    an explicit expand enum (EventExpandFields, ChampionExpand, ActivityListingExpandFields,
+    EventShipmentExpand). Again the two surfaces diverge.
+versioning:
+  documented: false
+  in_path: false
+  in_header: false
+  note: >-
+    No version appears in any documented path and no versioning policy is published. The API
+    host's own error bodies leak an internal prefix of /v2/developer-api/v1/, so a version
+    exists internally but is not part of the public contract a client can pin to.
+request_id_tracing:
+  supported: false
+  header: null
+  note: >-
+    No correlation or request-id header is documented, and none was returned on live probes
+    (response headers observed were date, content-type, content-length, server, x-powered-by,
+    vary, access-control-allow-credentials and etag). There is no identifier for a customer
+    to quote in a support ticket.
+rate_limit_signaling:
+  headers: []
+  documented: false
+  note: See rate-limits/goodera-rate-limits.yml. No RateLimit-* or X-RateLimit-* headers were
+    observed and none are documented.
+error_envelope:
+  documented: false
+  observed: true
+  detail: See errors/goodera-problem-types.yml.
+content_type:
+  request: application/json
+  response: application/json
+timestamps:
+  format: ISO 8601
+  fields:
+  - startTimeStamp
+  - endTimeStamp
+  timezone_handling: >-
+    A separate required timezone field must be supplied on event creation, and its value must
+    come from the documented GET /master-data/timezone list rather than being free text.
+identifiers:
+  style: 24-character hexadecimal MongoDB ObjectId
+  evidence: >-
+    Documented example values such as 610cc05de85e70001106f7d9 and 65f96d1e1d38620012d38261.
+  prefixed: false
+  note: Raw ObjectIds, no type prefix, so an identifier is not self-describing.
+reversibility:
+  grade: documented
+  credit_basis: >-
+    A reversal path exists and is documented for one write surface, but NO reversal window is
+    stated anywhere, so this cannot be graded verified.
+  docs: https://www.goodera.com/resources/api
+  write_surfaces:
+  - operation: POST /registrations
+    action: Enrol a volunteer on an event by email
+    reversal:
+      exists: true
+      operation: DELETE /registrations/{registrationId}
+      documented: true
+      name: Delete Registration
+    window:
+      stated: false
+      note: >-
+        The reference documents the delete operation but states no cut-off - it does not say
+        whether a registration can still be removed after the event starts, after attendance
+        is recorded, or after the event completes. An agent cannot know before it acts
+        whether the enrolment it is about to create is still removable later.
+  - operation: POST /events
+    action: Create a volunteering event against an opportunity with a nonprofit
+    reversal:
+      exists: unknown
+      operation: null
+      documented: false
+      note: >-
+        No cancel, delete, or reschedule operation for an event appears in the published REST
+        reference. Cancellation clearly exists as a concept in the platform - the MCP
+        EventState enum includes "cancelled" and the MCP tool description says events "are
+        currently active or cancelled" - but no partner-callable operation to reach that state
+        is published. This is the highest-consequence write on the API and it is documented as
+        one-way.
+    window:
+      stated: false
+  - operation: POST /participation
+    action: Record participation and volunteer hours for a person on an event
+    reversal:
+      exists: unknown
+      operation: null
+      documented: false
+      note: >-
+        No correction, void, or amend operation is documented. Because volunteer hours feed
+        corporate CSR and ESG reporting, an incorrect participation record is a reporting
+        error a partner has no published way to undo.
+    window:
+      stated: false
+  read_only: false
+  summary: >-
+    Three documented write operations, one documented reversal, zero stated windows. An agent
+    can undo an enrolment; it cannot undo an event or a recorded hour by any published means.
+dry_run_mode:
+  supported: false
+  documented: false
+  note: >-
+    No dry-run, validate-only, or preview parameter is documented, and no sandbox or test
+    environment exists (see the sandbox finding below). There is no way to rehearse a create-
+    event or add-registration call without performing it against production.
+sandbox:
+  exists: false
+  note: >-
+    No test environment, test mode, test key prefix, or fixture data is published. Every
+    documented example calls the production host directly.
+webhooks:
+  configurable: true
+  detail: >-
+    Organization configuration objects returned by the API carry webhookUrl and
+    inPersonWebhookUrl fields, so Goodera can POST to a customer-supplied endpoint.
+  event_catalog_published: false
+  payload_schema_published: false
+  signature_scheme_published: false
+  note: See asyncapi/goodera-webhooks.yml.
+findings:
+- id: two-surfaces-disagree-on-conventions
+  severity: medium
+  note: >-
+    The REST API and the MCP server disagree on pagination (page/pageSize versus
+    limit/offset), on expansion (none versus explicit expand enums), and on authentication
+    (static key versus none observed). A consumer integrating both must implement two
+    conventions for one vendor.
+- id: no-reversal-for-highest-consequence-writes
+  severity: high
+  note: >-
+    Event creation and participation recording - the two writes that touch a nonprofit's
+    calendar and a company's ESG reporting - have no published reversal path at all.
+- id: docs-example-embeds-live-third-party-endpoints
+  severity: medium
+  note: >-
+    The public API reference embeds a very large verbatim organization-configuration example
+    that contains live third-party endpoint URLs belonging to a tenant, including a Zapier
+    catch hook, a Google Apps Script exec endpoint, and a Zoho Analytics open-view report
+    link, alongside tenant names. API Evangelist has deliberately NOT reproduced those URLs in
+    this repository. Recorded as a documentation-hygiene observation for the provider, not as a
+    security finding or a vulnerability claim.

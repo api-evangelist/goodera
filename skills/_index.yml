@@ -1,0 +1,40 @@
+generated: '2026-08-22'
+method: generated
+source: >-
+  https://www.goodera.com/resources/api (REST operations) and mcp/goodera-mcp-tools.json
+  (probed MCP tool names)
+description: >-
+  Packaged Agent Skills for Goodera. Both are grounded in operations that were verified to
+  exist - the REST paths are quoted from Goodera's published reference, and every MCP tool
+  name was read from a live tools/list response. No operation named in either skill was
+  invented.
+skills:
+- name: goodera-book-a-volunteering-event
+  file: goodera-book-a-volunteering-event.md
+  api: goodera-developer-api
+  surface: REST
+  operations: 10
+  write: true
+  summary: >-
+    End-to-end booking flow - resolve master data, find an opportunity, create an event,
+    enrol and de-enrol volunteers. Carries explicit stop-and-confirm guidance because event
+    creation has no documented reversal and no idempotency key.
+- name: goodera-query-volunteering-data-over-mcp
+  file: goodera-query-volunteering-data-over-mcp.md
+  api: goodera-mcp
+  surface: MCP
+  operations: 17
+  write: false
+  summary: >-
+    Read-only agent access to the remote MCP server. Explicitly excludes the two email-sending
+    tools the server advertises, and flags the client/champion tools as confidential
+    third-party data on an endpoint that performs no protocol-layer authentication.
+excluded_operations:
+- operation: POST /participation
+  reason: >-
+    Records volunteer hours that feed CSR/ESG reporting and has no documented correction or
+    void path. Deliberately left to a human.
+- operation: sending-email-with-template
+  reason: Sends real mail from an unauthenticated endpoint; no skill has a reason to call it.
+- operation: sending-plain-html-email
+  reason: Sends real mail from an unauthenticated endpoint; no skill has a reason to call it.

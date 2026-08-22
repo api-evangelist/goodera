@@ -1,0 +1,119 @@
+generated: '2026-08-22'
+method: searched
+source: >-
+  registry.npmjs.org search + package metadata, pypi.org, api.github.com; cross-checked
+  against https://www.goodera.com/resources/api
+description: >-
+  Package/SDK inventory for Goodera. NO SDKs pointer is emitted in apis.yml. Goodera has
+  published npm packages and they are first-party, but not one of them is a client library
+  for the Developer API or the MCP server - they are internal React UI component libraries,
+  all abandoned. There is no SDK for Goodera's API in any language.
+sdk_count: 0
+official_api_sdk: false
+packages:
+- name: goodera-infinity-gems
+  registry: npm
+  url: https://www.npmjs.com/package/goodera-infinity-gems
+  official: true
+  official_basis: >-
+    Published by npm user bhushan_goodera with repository git+ssh://git@bitbucket.org/goodera/goodera-infinity-gems.git
+    and description "The centralized React component library for Goodera apps." Both the
+    maintainer account and the source repository are on Goodera-controlled namespaces.
+  is_api_client: false
+  kind: internal-ui-component-library
+  version: 1.0.0
+  published: '2022-12-26'
+  version_count: 5
+  license: MIT
+  note: >-
+    Last published 2022-12-26, three and a half years before this profile. Not a client for
+    the Developer API.
+- name: goodera-infinity-gems-test
+  registry: npm
+  url: https://www.npmjs.com/package/goodera-infinity-gems-test
+  official: true
+  official_basis: Same maintainer (bhushan_goodera) and same Bitbucket source repository.
+  is_api_client: false
+  kind: internal-ui-component-library
+  version: 1.6.0
+  published: '2022-08-23'
+  version_count: 56
+  license: MIT
+  note: >-
+    A test channel of the component library, published to the public npm registry. It carries
+    56 versions - more than the non-test package - which suggests the public registry was used
+    as an internal distribution channel rather than as a developer-facing artifact.
+- name: goodera-design-system-test
+  registry: npm
+  url: https://www.npmjs.com/package/goodera-design-system-test
+  official: true
+  official_basis: Same maintainer, repository git+ssh://git@bitbucket.org/goodera/goodera-storybook.git
+  is_api_client: false
+  kind: internal-ui-component-library
+  version: 1.0.4
+  published: '2021-03-26'
+  version_count: 11
+  license: MIT
+- name: goodera-infinity-gems-esg-mt
+  registry: npm
+  url: https://www.npmjs.com/package/goodera-infinity-gems-esg-mt
+  official: true
+  official_basis: Same maintainer and Bitbucket source repository.
+  is_api_client: false
+  kind: internal-ui-component-library
+  version: 0.0.9
+  published: '2021-06-30'
+  version_count: 8
+  license: MIT
+  note: >-
+    The "esg" name is a residue of Goodera's earlier ESG-reporting product line, predating the
+    volunteering focus.
+registries_checked:
+- registry: npm
+  status: searched
+  result: >-
+    4 first-party packages found, all UI component libraries, none an API client. Newest
+    release 2022-12-26.
+- registry: PyPI
+  status: searched
+  result: No package named goodera (HTTP 404 on pypi.org/pypi/goodera/json).
+- registry: GitHub
+  status: searched
+  result: >-
+    No GitHub organization named goodera (api.github.com/orgs/goodera returns HTTP 404). The
+    103 repositories matching "goodera" in GitHub search are third-party - hiring-assignment
+    and candidate-exercise repos by individuals, not Goodera-published code. Goodera's own
+    source lives on Bitbucket, per the npm repository fields, and is not public.
+- registry: PyPI, Maven Central, NuGet, pkg.go.dev, RubyGems, Packagist, crates.io
+  status: not-applicable
+  result: >-
+    No SDK is advertised in any language on the API reference page, so no language-specific
+    registry lookup had a first-party candidate to confirm.
+findings:
+- id: no-api-client-in-any-language
+  note: >-
+    A partner integrating the Goodera Developer API writes raw HTTP. There is no official or
+    community SDK, and the documentation offers curl only.
+- id: no-mcp-package
+  note: >-
+    The MCP server is remote-only. There is no npm or PyPI package to install, which is the
+    better posture for agent reach, but it also means the four npm packages above are
+    unrelated to it.
+- id: every-first-party-package-abandoned
+  note: >-
+    All four npm packages last shipped between 2021-03 and 2022-12. Every one of them predates
+    both the Developer API and the MCP server, and none of them wraps either.
+- id: source-not-on-github
+  note: >-
+    Goodera's engineering is on Bitbucket with no public organization, so there is no public
+    repository surface to harvest a spec, an SDK, or a proto from. NO GitHubOrganization
+    pointer is emitted.
+- id: unverified-third-party-postman-workspace
+  note: >-
+    A public Postman workspace slugged "developer-api-goodera" exists (1 collection, 0 APIs,
+    last updated 2024-03-21, 1 watcher). Its publisher handle is an auto-generated Postman
+    identifier with no Goodera branding or verified-team badge, so ownership by Goodera is
+    NOT established. NO Postman pointer is emitted in apis.yml on the strength of it - an
+    unowned workspace is not a provider-published artifact.
+  url: https://www.postman.com/solar-resonance-138462/developer-api-goodera
+  http_status: 200

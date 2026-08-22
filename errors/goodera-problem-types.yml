@@ -1,0 +1,93 @@
+generated: '2026-08-22'
+method: searched
+source: https://www.goodera.com/resources/api
+docs: https://www.goodera.com/resources/api
+description: >-
+  Error catalog for the Goodera Developer API. Every operation on the reference page
+  publishes the same four-code table and nothing more; no example error body, no
+  machine-readable error code registry, and no per-error remediation guidance is
+  published. The envelope shape below was observed live on the API host, not documented.
+format: proprietary-json
+rfc9457: false
+problem_json_media_type: false
+envelope:
+  documented: false
+  observed: true
+  observed_source: >-
+    Live GET requests to https://developer-api.goodera.com against unrouted paths on
+    2026-08-22 returned this shape.
+  shape:
+    name: string - exception class name, e.g. NotFoundException
+    message: string - human-readable message
+    statusCode: integer - the OUTER status code
+    timestamp: string - ISO 8601
+    url: string - the internal rewritten request path
+    data:
+      statusCode: integer - the INNER, real status code
+      message: string
+      error: string
+  example_observed: |
+    {"name":"NotFoundException","message":"Cannot GET /v2/developer-api/v1/opportunities",
+     "statusCode":500,"timestamp":"2026-08-22T11:53:56.247Z",
+     "url":"/v2/developer-api/v1/opportunities",
+     "data":{"statusCode":404,"message":"Cannot GET /v2/developer-api/v1/opportunities",
+     "error":"Not Found"}}
+problem_types:
+- code: 200
+  title: Request Successful
+  documented: true
+  remediation: null
+  note: Documented verbatim as "200 Request Successful" on every operation.
+- code: 401
+  title: Unauthorized
+  documented: true
+  remediation: >-
+    Supply a valid key in the x-api-key header. Keys are issued by Goodera through the
+    Request access form; there is no self-service rotation.
+  note: >-
+    Documented verbatim as "401 Unauthorized". Goodera's labelling is inverted relative to
+    RFC 9110 - see the semantics finding below.
+- code: 403
+  title: Unauthenticated
+  documented: true
+  remediation: >-
+    Documented meaning is that the caller is not authenticated, which is the opposite of the
+    RFC 9110 meaning of 403 Forbidden.
+  note: Documented verbatim as "403 Unauthenticated".
+- code: 500
+  title: Internal Server Error
+  documented: true
+  remediation: >-
+    No guidance published. No retry policy, backoff advice, or correlation identifier is
+    documented, and there is no status page to check.
+  note: >-
+    Observed to be over-used - routing misses that should be 404 are returned as 500 with the
+    real 404 nested inside data.statusCode.
+findings:
+- id: inverted-401-403-semantics
+  severity: medium
+  note: >-
+    Goodera documents 401 as "Unauthorized" and 403 as "Unauthenticated". RFC 9110 defines
+    401 as unauthenticated (missing or bad credentials) and 403 as authenticated but
+    forbidden. An agent or client written against RFC semantics will branch the wrong way -
+    retrying with a new key on the code that actually means "no key", and giving up on the
+    code that actually means "wrong permissions".
+- id: 500-masks-404
+  severity: medium
+  note: >-
+    The application returns HTTP 500 for unrouted paths while nesting the genuine 404 in
+    data.statusCode. A client cannot distinguish "you called a path that does not exist"
+    from "the service is broken" by status code alone, which defeats ordinary retry logic -
+    a 500 invites a retry, a 404 must not be retried.
+- id: no-error-code-registry
+  severity: medium
+  note: >-
+    No application-level error codes, no error reference page, and no example error payloads
+    are published. The four HTTP codes are the entire published error contract for a write-
+    capable API that creates events and registers people.
+- id: no-validation-error-contract
+  severity: medium
+  note: >-
+    Create event and add registration carry many required fields (timestamps, timezone from
+    a master list, country, language, email, expected volunteer count) but no 400 or 422 is
+    documented, so the shape of a validation failure is unspecified.
