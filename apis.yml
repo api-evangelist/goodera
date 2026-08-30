@@ -33,6 +33,17 @@ tags:
 - Social Impact
 - CSR
 - Employee Engagement
+- Non-Profit
+- Event
+- Volunteering
+- ESG
+- MCP
+tags_raw:
+- Company
+- Corporate Volunteering
+- Social Impact
+- CSR
+- Employee Engagement
 - Nonprofits
 - Events
 - Volunteering
@@ -49,6 +60,12 @@ apis:
   humanURL: https://www.goodera.com/resources/api
   baseURL: https://developer-api.goodera.com
   tags:
+  - Volunteering
+  - Opportunities
+  - Event
+  - Registrations
+  - Participation
+  tags_raw:
   - Volunteering
   - Opportunities
   - Events
@@ -80,6 +97,11 @@ apis:
   humanURL: https://www.goodera.com/blog/goodera-launches-mcp-server
   baseURL: https://mcp.goodera.com/mcp
   tags:
+  - MCP
+  - Agents
+  - Event
+  - Opportunities
+  tags_raw:
   - Model Context Protocol
   - Agents
   - Events
