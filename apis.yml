@@ -1,14 +1,12 @@
 aid: goodera
 name: Goodera
-description: 'Goodera is a B2B SaaS corporate volunteering and social impact platform
-  that curates, hosts and manages employee volunteering programs for enterprises,
-  working with a stated 50,000+ vetted nonprofit partners across 100+ countries in
-  virtual, in-person, outdoor and in-office formats. For integrators it publishes a
-  REST Developer API at developer-api.goodera.com covering volunteering opportunities,
-  event creation, registrations and participation/hours tracking, authenticated with
-  an x-api-key header, and it operates a remote Model Context Protocol server at
-  mcp.goodera.com that exposes 19 anonymous-readable tools over the same events,
-  clients, champions, activities, opportunities and master-data domains.'
+description: Goodera is a B2B SaaS corporate volunteering and social impact platform that curates, hosts
+  and manages employee volunteering programs for enterprises, working with a stated 50,000+ vetted nonprofit
+  partners across 100+ countries in virtual, in-person, outdoor and in-office formats. For integrators
+  it publishes a REST Developer API at developer-api.goodera.com covering volunteering opportunities,
+  event creation, registrations and participation/hours tracking, authenticated with an x-api-key header,
+  and it operates a remote Model Context Protocol server at mcp.goodera.com that exposes 19 anonymous-readable
+  tools over the same events, clients, champions, activities, opportunities and master-data domains.
 url: https://raw.githubusercontent.com/api-evangelist/goodera/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
@@ -64,13 +62,12 @@ tags_raw:
 - ESG
 - Model Context Protocol
 apis:
-- aid: goodera-developer-api
+- aid: goodera:goodera-developer-api
   name: Goodera Developer API
-  description: 'REST API for volunteering partners to list Goodera volunteer opportunities
-    inside their own platform, create volunteering events against an opportunity,
-    register and de-register volunteers, and record participation for volunteer-hour
-    tracking. JSON over HTTPS, API key in the x-api-key header, with an unauthenticated
-    master-data surface for timezone, country and language reference lists.'
+  description: REST API for volunteering partners to list Goodera volunteer opportunities inside their
+    own platform, create volunteering events against an opportunity, register and de-register volunteers,
+    and record participation for volunteer-hour tracking. JSON over HTTPS, API key in the x-api-key header,
+    with an unauthenticated master-data surface for timezone, country and language reference lists.
   humanURL: https://www.goodera.com/resources/api
   baseURL: https://developer-api.goodera.com
   tags:
@@ -100,14 +97,13 @@ apis:
     url: rate-limits/goodera-rate-limits.yml
   - type: DataModel
     url: data-model/goodera-data-model.yml
-- aid: goodera-mcp
+- aid: goodera:goodera-mcp
   name: Goodera MCP Server
-  description: 'Remote Model Context Protocol server announced as the first from a
-    social impact company, exposing live Goodera volunteering data to AI agents and
-    LLM workflows. Streamable HTTP transport at https://mcp.goodera.com/mcp, server
-    name "Goodera MCP" version 1.14.1, protocol 2025-06-18, answering initialize and
-    tools/list anonymously with 19 tools across events, clients, champions, master
-    data, activities, opportunities and templated email.'
+  description: Remote Model Context Protocol server announced as the first from a social impact company,
+    exposing live Goodera volunteering data to AI agents and LLM workflows. Streamable HTTP transport
+    at https://mcp.goodera.com/mcp, server name "Goodera MCP" version 1.14.1, protocol 2025-06-18, answering
+    initialize and tools/list anonymously with 19 tools across events, clients, champions, master data,
+    activities, opportunities and templated email.
   humanURL: https://www.goodera.com/blog/goodera-launches-mcp-server
   baseURL: https://mcp.goodera.com/mcp
   tags:
