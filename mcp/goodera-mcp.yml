@@ -3,12 +3,11 @@ method: probed
 source: https://mcp.goodera.com/mcp
 name: Goodera MCP Server
 slug: goodera-mcp
-description: >-
-  Remote Model Context Protocol server operated by Goodera. Announced on the Goodera
-  blog as the first MCP server from a social impact company, bringing real-time
-  volunteering data to AI agents and LLM-powered workflows. API Evangelist reached the
-  endpoint anonymously and completed a full initialize + tools/list handshake, so every
-  tool and input schema recorded here is the server's own response, not a derivation.
+description: Remote Model Context Protocol server operated by Goodera. Announced on the Goodera blog as
+  the first MCP server from a social impact company, bringing real-time volunteering data to AI agents
+  and LLM-powered workflows. API Evangelist reached the endpoint anonymously and completed a full initialize
+  + tools/list handshake, so every tool and input schema recorded here is the server's own response, not
+  a derivation.
 deployment:
   mode: remote
   endpoint: https://mcp.goodera.com/mcp
@@ -17,24 +16,20 @@ deployment:
   package: null
   auth: none
   verified: probed
-  note: >-
-    The endpoint URL is not printed in Goodera's public documentation or in the launch
-    blog post; API Evangelist resolved mcp.goodera.com by DNS and confirmed the MCP
-    surface by protocol handshake. GET /mcp returns HTTP 406 with a JSON-RPC error
-    demanding text/event-stream, which is the MCP streamable-HTTP signature. POST
-    initialize returned HTTP 200, an mcp-session-id header, and a full server capability
-    block with no credential of any kind supplied. No OAuth challenge was issued and
-    neither /.well-known/oauth-protected-resource nor /.well-known/oauth-authorization-server
-    is served (both 404), so there is no discoverable authorization server for this
-    resource.
+  note: The endpoint URL is not printed in Goodera's public documentation or in the launch blog post;
+    API Evangelist resolved mcp.goodera.com by DNS and confirmed the MCP surface by protocol handshake.
+    GET /mcp returns HTTP 406 with a JSON-RPC error demanding text/event-stream, which is the MCP streamable-HTTP
+    signature. POST initialize returned HTTP 200, an mcp-session-id header, and a full server capability
+    block with no credential of any kind supplied. No OAuth challenge was issued and neither /.well-known/oauth-protected-resource
+    nor /.well-known/oauth-authorization-server is served (both 404), so there is no discoverable authorization
+    server for this resource.
 server_info:
   name: Goodera MCP
   version: 1.14.1
   protocol_version: '2025-06-18'
   implementation: uvicorn / FastMCP (x-accel-buffering and _meta._fastmcp present in responses)
-  instructions: >-
-    You are a helpful assistant that can help with a variety of tasks. You are currently
-    working for Goodera, a company that provides a platform for volunteering and events.
+  instructions: You are a helpful assistant that can help with a variety of tasks. You are currently working
+    for Goodera, a company that provides a platform for volunteering and events.
 capabilities:
   tools:
     supported: true
@@ -56,11 +51,13 @@ tools:
 - name: listing-events
   category: events
   write: false
-  description: List all volunteering events created by Goodera clients, filtered by time range, state, champion or client.
+  description: List all volunteering events created by Goodera clients, filtered by time range, state,
+    champion or client.
 - name: retrieving-event
   category: events
   write: false
-  description: Retrieve a specific event by identifier, including name, description, start/end time and location.
+  description: Retrieve a specific event by identifier, including name, description, start/end time and
+    location.
 - name: retrieving-event-participation-details
   category: events
   write: false
@@ -131,23 +128,17 @@ tools:
   description: Retrieve an opportunity by id for additional detail.
 observations:
 - id: anonymous-tool-listing
-  note: >-
-    All 19 tools, with complete JSON Schema input definitions, are enumerable with no
-    credential. Tool listing is not the same as tool execution and API Evangelist did not
-    invoke any tool, so whether the data-returning calls are themselves anonymous is not
-    established here.
+  note: All 19 tools, with complete JSON Schema input definitions, are enumerable with no credential.
+    Tool listing is not the same as tool execution and API Evangelist did not invoke any tool, so whether
+    the data-returning calls are themselves anonymous is not established here.
 - id: unauthenticated-write-tools-advertised
-  note: >-
-    Two of the 19 advertised tools are write/side-effect operations that send email
-    (sending-email-with-template, sending-plain-html-email). They are advertised on an
-    endpoint that performs no authentication at the protocol layer and publishes no
-    OAuth protected-resource metadata. This is recorded as an observation about the
-    published surface, not a vulnerability claim; API Evangelist did not call them.
+  note: Two of the 19 advertised tools are write/side-effect operations that send email (sending-email-with-template,
+    sending-plain-html-email). They are advertised on an endpoint that performs no authentication at the
+    protocol layer and publishes no OAuth protected-resource metadata. This is recorded as an observation
+    about the published surface, not a vulnerability claim; API Evangelist did not call them.
 - id: no-oauth-discovery
-  note: >-
-    RFC 9728 /.well-known/oauth-protected-resource returns 404 on mcp.goodera.com, as does
-    /.well-known/oauth-authorization-server, so an MCP client cannot negotiate authorization
-    by discovery.
+  note: RFC 9728 /.well-known/oauth-protected-resource returns 404 on mcp.goodera.com, as does /.well-known/oauth-authorization-server,
+    so an MCP client cannot negotiate authorization by discovery.
 - id: no-prompts-or-resources
   note: The server declares prompts and resources capabilities but publishes zero of each.
 x-evidence:
@@ -176,3 +167,28 @@ x-evidence:
   - url: https://mcp.goodera.com/.well-known/oauth-authorization-server
     method: GET
     http_status: 404
+tool_quality:
+  tool_count: 19
+  tokens_total: 5406
+  tokens_per_tool_median: 282
+  heavy_tools: []
+  heavy_tool_count: 0
+  params_total: 20
+  params_undescribed: 10
+  params_described_pct: 50.0
+  tools_with_undescribed_params: 10
+  tools_annotated: 0
+  annotated_pct: 0.0
+  state_changing_unhinted: []
+  tools_missing_schema: 0
+  short_descriptions: 0
+  duplicate_descriptions: 0
+  duplicate_names: 0
+  nonportable_names: []
+  output_schema_count: 0
+  token_estimate: chars/3.6 of each compact tool definition
+  source: mcp/goodera-mcp-tools.json
+  measured: '2026-10-20'
+  scored: false
+  note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
+    from Glimind's agent-readiness audit.
