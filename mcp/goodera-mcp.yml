@@ -49,83 +49,119 @@ capabilities:
 tool_schemas: mcp/goodera-mcp-tools.json
 tools:
 - name: listing-events
+  description: List all volunteering events. These are the events that are created by the clients of Goodera.
+    These are the events that are open for volunteering. These are the events that are currently active
+    or cancelled.
   category: events
   write: false
-  description: List all volunteering events created by Goodera clients, filtered by time range, state,
-    champion or client.
 - name: retrieving-event
+  description: Retrieve a specific event by its identifier. This gets the event details including the
+    event name, description, start time, end time, location, and other details.
   category: events
   write: false
-  description: Retrieve a specific event by identifier, including name, description, start/end time and
-    location.
 - name: retrieving-event-participation-details
+  description: Retrieve the participation details of a specific event by its identifier. This gets the
+    participation details of the event including the number of participants, the number of volunteers,
+    number of kits
   category: events
   write: false
-  description: Retrieve participation details for a specific event.
 - name: retrieving-event-rating-details
+  description: Retrieve the rating details of a specific event by its identifier. This gets the rating
+    details of the event including the number of ratings, the average rating, and the number of ratings
+    per star.
   category: events
   write: false
-  description: Retrieve rating details for a specific event.
 - name: retrieving-event-shipment-details
+  description: Retrieve the shipment details of a specific event by its identifier. This gets the shipment
+    details of the event including the number of boxes, the number of items, and the number of items per
+    box.
   category: events
   write: false
-  description: Retrieve shipment details for a specific event.
 - name: retrieving-event-collateral-details
+  description: Retrieve the collateral details of a specific event by its identifier. This gets the collateral
+    details of the event including the flyer, the KBYG, the event deck and so on.
   category: events
   write: false
-  description: Retrieve collateral details for a specific event.
 - name: listing-clients
+  description: Find all clients associated with the Goodera's systems. These are the clients who have
+    created events, champions, and opportunities.
   category: clients
   write: false
-  description: Find all clients associated with Goodera's systems.
 - name: retrieving-brand-guidelines
+  description: Retrieve the brand guidelines for a specific client. This includes the primary color, secondary
+    color, and instructions for the client to send notifications
   category: clients
   write: false
-  description: Retrieve brand guidelines for a specific client, including primary and secondary colours.
 - name: listing-champions
+  description: Find all champions for a specific event. These are the champions who are associated with
+    events. These are the people who have organized the event, will take part in bringing volunteers to
+    the event, and will be the ones to review the volunteers after the event.
   category: champions
   write: false
-  description: Find all champions associated with events.
 - name: finding-master-data-by-domain
+  description: Master data is a key value pair that can be used to store static data which is used across
+    the application. This tool is used to find master data by domain which is a wider search on the master
+    data table
   category: master-data
   write: false
-  description: Look up master-data key/value pairs by domain.
 - name: finding-master-data-by-domain-and-type
+  description: Master data is a key value pair that can be used to store static data which is used across
+    the application. This tool is used to find master data by domain and type which is a more specific
+    search on the master data table
   category: master-data
   write: false
-  description: Look up master-data key/value pairs by domain and type.
 - name: finding-all-master-data
+  description: Master data is a key value pair that can be used to store static data which is used across
+    the application. This tool is used to find all master data
   category: master-data
   write: false
-  description: Return all master-data key/value pairs.
 - name: sending-email-with-template
+  description: Send an email using a predefined template. This is a tool which uses different services
+    internally to send an email.
   category: messaging
   write: true
-  description: Send an email using a predefined template.
 - name: sending-plain-html-email
+  description: Send an email using plain html. This is a tool which uses different services internally
+    to send an email.
   category: messaging
   write: true
-  description: Send an email using plain HTML through a selectable email adapter.
 - name: search-activities
+  description: Search for activities based on the query. These are activities that are available to be
+    volunteered for.  This is a free text search and will return activities that match the query. This
+    must define what the user expects as the activities they are interested in. This should not just be
+    keywords but a well formed paragraph of requirements
   category: catalog
   write: false
-  description: Search volunteering activities by query, business unit and deliverable type.
 - name: retrieving-activity
+  description: Retrieve an activity by its id to retrieve additional details about the activity
   category: catalog
   write: false
-  description: Retrieve an activity by id for additional detail.
 - name: build-execution-plan
+  description: "This tool is used for building an execution plan to help resolve user queries. Only use\
+    \ an execution plan when it fits the query the user has. \n \n            These are the execution\
+    \ plans available for different types of execution. \n            The execution plan must be used\
+    \ only at the start of execution and not after a certain plan has already been built\n           \
+    \ The key is a unique identifier and the description is for defining what the plan is meant to do.\n\
+    \        Key: data-analytics Description: This is an execution plan for anything that involves reporting\
+    \ data. For anything that involves building a view on top of large amounts of data or includes querying\
+    \ the database for anything which includes multiple tables or entities\nKey: email-content-generation\
+    \ Description: This is an execution plan used for generating notification or email content. If the\
+    \ user asks for generating content for a certain email this plan should be used\nKey: generic Description:\
+    \ Generic queries which do not belong to any other execution plans"
   category: planning
   write: false
-  description: Build an execution plan to help resolve a user query across the other tools.
 - name: search-opportunities
+  description: Search for opportunities based on the query. These are opportunities that are available
+    to be volunteered for.  This is a free text search and will return opportunities that match the query.
+    This must define what the user expects as the opportunities they are interested in. This should not
+    just be keywords but a well formed paragraph of requirements. Opportunities are basically activities
+    for a a client, you must search this only when a user specifies a certain client to be used
   category: catalog
   write: false
-  description: Search volunteering opportunities by query and activity format.
 - name: retrieving-opportunity
+  description: Retrieve an opportunity by its id to retrieve additional details about the opportunity
   category: catalog
   write: false
-  description: Retrieve an opportunity by id for additional detail.
 observations:
 - id: anonymous-tool-listing
   note: All 19 tools, with complete JSON Schema input definitions, are enumerable with no credential.
@@ -192,3 +228,4 @@ tool_quality:
   scored: false
   note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
     from Glimind's agent-readiness audit.
+tools_count: 19
