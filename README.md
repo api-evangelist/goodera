@@ -64,5 +64,118 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Goodera is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+Goodera is a B2B SaaS corporate volunteering and social impact platform that curates, hosts and manages employee volunteering programs for enterprises, working with a stated 50,000+ vetted nonprofit partners across 100+ countries in virtual, in-person, outdoor and in-office formats. For integrators it publishes a REST Developer API at developer-api.goodera.com covering volunteering opportunities, event creation, registrations and participation/hours tracking, authenticated with an x-api-key header, and it operates a remote Model Context Protocol server at mcp.goodera.com that exposes 19 anonymous-readable tools over the same events, clients, champions, activities, opportunities and master-data domains.
+
+**Areas:** Company · Corporate Volunteering · Social Impact · CSR · Employee Engagement · Non-Profit · Event · Volunteering · ESG · MCP
+
+## Goodera on APIs.io
+
+Everything profiled for Goodera is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/goodera/](https://apis.io/providers/goodera/)** — or go straight to one of the APIs or properties below.
+
+### APIs (2)
+
+- [Goodera Developer API](https://apis.io/apis/goodera/goodera-developer-api/) — REST API for volunteering partners to list Goodera volunteer opportunities inside their own platform, create volunteering events against an opportunity,…
+- [Goodera MCP Server](https://apis.io/apis/goodera/goodera-mcp/) — Remote Model Context Protocol server announced as the first from a social impact company, exposing live Goodera volunteering data to AI agents and LLM…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Goodera Webhooks](https://apis.io/asyncapis/goodera/goodera-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Goodera MCP Server](https://apis.io/servers/goodera/goodera-mcp-server/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Goodera Authentication](https://apis.io/security/goodera/goodera-authentication/)
+- [Goodera Domain Security](https://apis.io/security/goodera/goodera-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Goodera Plans Pricing](https://apis.io/plans/goodera/goodera-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Goodera Rate Limits](https://apis.io/rate-limits/goodera/goodera-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.goodera.com/)
+- [Documentation](https://www.goodera.com/resources/api)
+- [API reference](https://www.goodera.com/resources/api)
+- [Sign up](https://app.goodera.com/)
+- [Support](https://www.goodera.com/about/contact-us)
+- [Blog](https://www.goodera.com/blog)
+- [Terms of service](https://www.goodera.com/pages/terms)
+- [Privacy policy](https://www.goodera.com/pages/privacy)
+
+## API Evangelist rating
+
+**Kin Score 34.9** — thin · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 39.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 7.9 |
+| Developer ergonomics | 37.5 |
+| Access clarity | 27.6 |
+
+**Agent readiness 29.5** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/goodera/](https://apis.io/providers/goodera/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Goodera: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/goodera/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
